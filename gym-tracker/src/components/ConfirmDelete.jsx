@@ -8,12 +8,12 @@ const ConfirmDelete = ({exercise , onDelete, onCancel}) => {
 
                 <p className="font-outfit text-l ">Do you want to delete {exercise.name}?</p>
                 <div className="">
-                    <button className="bg-accent/50 border border-gray-700 text-zinc-300 px-5  mt-1 mr-2 py-2 
-                                    rounded-xl font-medium hover:bg-gray-800 transition-colors cursor-pointer" 
-                            onClick={onDelete}>Yes</button>
+                    <button className="bg-zinc-100 border border-gray-700 text-zinc-800 px-5  mt-1 mr-2 py-2 
+                                    rounded-xl font-medium hover:bg-zinc-400 transition-colors cursor-pointer" 
+                            onClick={onDelete}>OK</button>
 
-                    <button className="bg-red-500/60 border border-gray-700 cursor-pointer
-                            text-zinc-100 px-3 py-2 rounded-xl font-medium hover:bg-red-500/20 transition-colors "
+                    <button className="bg-zinc-700 border border-gray-700 cursor-pointer
+                            text-zinc-100 px-3 py-2 rounded-xl font-medium hover:bg-zinc-500/20 transition-colors "
                              onClick={onCancel}>Cancel</button>
                 </div>
 
