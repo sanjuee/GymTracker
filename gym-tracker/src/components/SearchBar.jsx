@@ -22,7 +22,7 @@ const SearchBar = () =>{
                 .from("exercises")
                 .select("id, name")
                 .ilike('name', `%${searchKey}%`)
-                .limit(10)
+                .limit(25)
             if (error){
                 console.log("Error fetching data.", error)
             }else{
@@ -46,8 +46,8 @@ const SearchBar = () =>{
                 onChange={(e) => setSearchKey(e.target.value)}
                 />
                 {(loading || result.length > 0 || (searchKey.length >= 3 && !loading)) && (
-                    <div className="absolute top-full left-6 mt-2 w-48 bg-[#1b1b1b] border
-                     border-zinc-800 rounded-xl shadow-2xl shadow-black/50 z-[100] overflow-hidden py-1"> 
+                    <div className="absolute top-full left-6 mt-2 w-48 bg-[#1b1b1b] border max-h-[500px] custom-scrollbar
+                     border-zinc-800 rounded-xl shadow-2xl shadow-black/50 z-[100] overflow-y-auto cursor-pointer py-1"> 
 
                     {loading && (
                         <div className="px-4 py-3 text-sm text-zinc-500 flex items-center gap-2">
