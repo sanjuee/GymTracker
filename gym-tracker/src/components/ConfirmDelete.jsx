@@ -8,7 +8,7 @@ const ConfirmDelete = ({exercise , onDelete, onCancel}) => {
 
                 <p className="font-outfit text-l ">Do you want to delete {exercise.name}?</p>
                 <div className="">
-                    <button className="bg-zinc-100 border border-gray-700 text-zinc-800 px-5  mt-1 mr-2 py-2 
+                    <button className="bg-accent text-zinc-200 border border-gray-700  px-5  mt-1 mr-2 py-2 
                                     rounded-xl font-medium hover:bg-zinc-400 transition-colors cursor-pointer" 
                             onClick={onDelete}>OK</button>
 

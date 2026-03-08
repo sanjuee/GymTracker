@@ -143,11 +143,12 @@ const Auth = () => {
                 </form>
 
                 
-
-                    <p className="mt-6 text-center text-zinc-500 text-[18px]">
+                <div className="pt-4 border-t border-zinc-700/50 mt-7 text-center">
+                    <p className=" text-center text-zinc-500 text-[18px] ">
                         {isSignUp ? "Already have an account? " : "New to GymLog? "} 
-                        <button type="button" onClick={() => (setIsSignUp(!isSignUp), setError(null))} className="text-white underline italic cursor-pointer text-l">{isSignUp ? "Sign In" : "Create account"}</button>
+                        <button type="button" onClick={() => (setIsSignUp(!isSignUp), setError(null))} className="text-accent underline cursor-pointer text-l">{isSignUp ? "Sign In" : "Create account"}</button>
                     </p>
+                </div>
                 
 
                 

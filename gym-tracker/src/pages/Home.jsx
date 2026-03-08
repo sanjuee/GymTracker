@@ -5,6 +5,7 @@ import ConfirmDelete from "../components/ConfirmDelete"
 import ToastMessage from "../components/toastMessage"
 import Header from "../components/layouts/Header"
 import { useLocation } from "react-router-dom"
+import AddExerciseFromDatabase from "../components/AddExerciseFromDatabase"
 
 const Home = () => {
 
@@ -15,6 +16,8 @@ const Home = () => {
     const [showDeleteToast, setShowDeleteToast] = useState(false)
     const [showSignInToast, setShowSignInToast] = useState(false)
     const [toastSignInMessage, setToastSignInMessage] = useState("")
+
+    const [addExercise, setAddExercise] = useState(false)
 
     useEffect(() => {
         if (location.state?.toastMsg){
@@ -57,6 +60,7 @@ const Home = () => {
                             title={category}
                             exercises={exercises}
                             requestDelete = {requestDelete}
+                            setAddExercise={setAddExercise}
                         />
                 ))}
                 {exerciseToDelete && (
@@ -68,6 +72,7 @@ const Home = () => {
                 )}
                 {showDeleteToast && <ToastMessage message="Exercise Deleted !"/>}
                 {showSignInToast && <ToastMessage message={toastSignInMessage}/>}
+                {addExercise && <AddExerciseFromDatabase onClose={() => setAddExercise(false)}/>}
             </>
         
     )

@@ -52,8 +52,8 @@ const SearchBar = () =>{
                 onChange={(e) => setSearchKey(e.target.value)}
                 />
                 {(loading || result.length > 0 || (searchKey.length >= 3 && !loading)) && (
-                    <div className="absolute top-full font-inter  left-6 mt-2 w-48 bg-[#1b1b1b] border max-h-[500px] custom-scrollbar
-                     border-zinc-800 rounded-xl shadow-2xl shadow-black/50 z-[100] overflow-y-auto cursor-pointer py-1"> 
+                    <div className="absolute top-full font-inter  left-6 mt-2 w-48 bg-card-bg border max-h-125 custom-scrollbar
+                     border-zinc-800 rounded-xl shadow-2xl shadow-black/50 z-100 overflow-y-auto cursor-pointer py-1"> 
 
                     {loading && (
                         <div className="px-4 py-3 text-[14px] font-outfit text-zinc-500 flex items-center gap-3">

@@ -2,7 +2,7 @@ import ExerciseCard from "./ExerciseCard"
 import { CirclePlus } from "lucide-react"
 
 
-function ExerciseRow({ title, exercises, requestDelete }) {
+function ExerciseRow({ title, exercises, requestDelete, setAddExercise}) {
     return (
         <section className="mb-2">
             <div className="flex items-center justify-between mt-2.5 px-6 mb-1">
@@ -20,7 +20,8 @@ function ExerciseRow({ title, exercises, requestDelete }) {
                 />
             ))}
                 <div className="flex flex-col justify-center items-center relative shrink-0 bg-[#131313] w-45 h-46
-                        border-2 border-dashed border-zinc-600 rounded-2xl text-zinc-400">
+                        border-2 border-dashed border-zinc-600 rounded-2xl text-zinc-400 cursor-pointer"
+                            onClick={()=>setAddExercise(true)}>
                             <CirclePlus size={45}/> 
                             <span className="font-outfit text-l tracking-tight m-0.5">Add Exercise</span>
                 </div>
