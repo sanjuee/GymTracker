@@ -19,8 +19,9 @@ const Home = () => {
     const [showSignInToast, setShowSignInToast] = useState(false)
     const [signInMessageToast, setSignInMessageToast] = useState("")
     const [showAddExerciseToast,setAddExerciseToast] = useState(false)
-    const [addExercise, setAddExercise] = useState(false)
+    const [addExerciseButton, setAddExerciseButton] = useState(false)
     const [exerciseCategory, setExerciseCategory] = useState(null)
+
 
     useEffect(()=>{
         try{
@@ -45,18 +46,18 @@ const Home = () => {
 
         if (!user) return
         
-        const getExerciseData = async () => {
+        const getUserExerciseData = async () => {
             const { error, data } = await supabase
                 .from("user_exercises")
                 .select(`
                     id, 
                     exercise_id, 
-                    exercises (
-                        name, 
-                        image_urls, 
-                        category,
-                        main_muscle
-                    )
+                        exercises (
+                            name, 
+                            image_urls, 
+                            category,
+                            main_muscle
+                        )
                 `)
                 .eq("user_id", user.id)
 
@@ -79,10 +80,9 @@ const Home = () => {
                 });
                 return acc;
             }, {});
-            console.log(grouped)
             setExerciseData(grouped)
         }
-        getExerciseData()
+        getUserExerciseData()
     },[user])
 
     useEffect(() => {
@@ -102,11 +102,11 @@ const Home = () => {
         setExerciseToDelete({...exercise, category})
     } 
 
-    const deleteExercise = (id, category) => {
+    const deleteExercise = async(id, category) => {
 
-        const categoryToUpdate = exerciseData[category]
-        const updatedList = categoryToUpdate.filter((exe) => exe.id !== id)
-
+        const { error } = supabase
+                          .delete()
+                          .eq("id", id)
         setExerciseData({
             ...exerciseData,
             [category]: updatedList
@@ -114,8 +114,20 @@ const Home = () => {
         setShowDeleteToast(true)
         setTimeout(() => setShowDeleteToast(false), 15000)
         setExerciseToDelete(null)
-
     }
+
+   const onExerciseAdded = (newExercise) => {
+
+    const category = newExercise.category
+    setExerciseData( (prevData) => {
+        const currentCategoryList = prevData[category] || []
+        return {
+            ...prevData,
+            [category] : [...currentCategoryList, newExercise ]
+        }
+    })
+
+   }
 
 
     return (
@@ -126,7 +138,7 @@ const Home = () => {
                             title={category}
                             exercises={exercises}
                             requestDelete = {requestDelete}
-                            setAddExercise={setAddExercise}
+                            setAddExercise={setAddExerciseButton}
                             setExerciseCategory = {setExerciseCategory}
                         />
                 ))}
@@ -137,7 +149,14 @@ const Home = () => {
                         onCancel = { () => setExerciseToDelete(null)}
                     />
                 )}
-                {(addExercise && user) && <AddExerciseFromDatabase exerciseCategory={exerciseCategory} toast={setAddExerciseToast} userData={user} onClose={() => setAddExercise(false)}/>}
+                {(addExerciseButton && user) && (
+                        <AddExerciseFromDatabase 
+                            exerciseCategory={exerciseCategory} 
+                            toast={setAddExerciseToast} userData={user} 
+                            onExerciseAdded={onExerciseAdded}
+                            onClose={() => setAddExerciseButton(false)}
+                        />
+                )}
 
                 {showDeleteToast && <ToastMessage message="Exercise Deleted !"/>}
                 {showSignInToast && <ToastMessage message={signInMessageToast}/>}

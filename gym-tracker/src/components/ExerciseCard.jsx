@@ -10,14 +10,14 @@ const ExerciseCard = ({exercise, requestDelete}) => {
                     src={exercise.image}
                     alt={exercise.name}
                     className=" w-full h-full rounded-t-xl object-cover "
-                />
+                />  
                 
-        <div className=" w-45 h-13 bg-zinc-800 text-zinc-100 flex items-center justify-center text-center text-inter text-[17.5px] 
+        <div className=" w-45 h-13.5 bg-zinc-800 text-zinc-100 flex items-center justify-center text-center text-inter text-[17.5px] 
                         tracking-tighter rounded-b-xl ">{exercise.name}</div>
         <button 
             onClick={() => requestDelete(exercise, exercise.muscle)}
-            className="absolute top-2 right-2 p-2 bg-black/60 backdrop-blur-md rounded-full 
-             hover:text-red-500 hover:bg-black/60 transition-all cursor-pointer"
+            className="absolute top-2 right-2 p-2 bg-black/80 backdrop-blur-md rounded-full 
+             text-red-500 hover:bg-black/60 transition-all cursor-pointer"
             ><Trash2 size={16} />
         </button>
         </div>

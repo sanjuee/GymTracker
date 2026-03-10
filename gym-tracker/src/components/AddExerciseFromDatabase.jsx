@@ -3,7 +3,7 @@ import SearchBar from "./SearchBar"
 import { useState } from "react"
 import { supabase } from "../lib/supabaseClient"
 
-const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory}) => {
+const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, onExerciseAdded}) => {
 
     const [selectedExercise,setSelectedExercise] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -15,21 +15,40 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory})
 
         setIsLoading(true)
 
-        const { error } = await supabase
+        const { data, error } = await supabase
                                 .from("user_exercises")
                                 .insert([{
                                    user_id : userData.id ,
                                    exercise_id : selectedExercise.id
                                 }])
+                                .select(`
+                                    id, 
+                                    exercise_id, 
+                                        exercises (
+                                            name, 
+                                            image_urls, 
+                                            category,
+                                            main_muscle
+                                        )`)
         
         if(error){
             console.error("Error adding exercise:", error)
             alert("Failed to add exercise. Please try again.")
             return
         }
+
+        const flatData = {
+            "id" : data[0].id,
+            "name": data[0].exercises.name,
+            "muscle" : data[0].exercises.main_muscle,
+            "category" : data[0].exercises.category,
+            "image" : data[0].exercises.image_urls[0]
+        }
+
+        onExerciseAdded(flatData)
         setIsLoading(false)
-        toast(true)
         onClose()
+        toast(true)
     }
 
     return (

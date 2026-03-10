@@ -18,9 +18,8 @@ const ConfirmDelete = ({exercise , onDelete, onCancel}) => {
                 </div>
 
             </div>
-        </div>
-        
-    )
+        </div>   
+    ) 
 }
 
 export default ConfirmDelete
