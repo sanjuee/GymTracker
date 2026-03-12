@@ -54,14 +54,14 @@ const SearchBar = ({onSelect, searchFilterCategory}) =>{
 
 
     return(
-         <div className="relative flex items-center gap-1">
-                <Search size={20} className="text-zinc-500"/>
+         <div className="relative flex items-center gap-1 ">
+                <Search size={20} className=" absolute ml-2 text-zinc-400 pointer-events-none"/>
                 <input type="text" 
                     value={searchKey}
                     placeholder="Search exercise" 
-                    className="bg-transparent w-full border border-[#262626] rounded-full py-2 pl-2
+                    className="bg-transparent w-full max-w-xl border border-[#262626] rounded-full py-2 pl-8
                                 outline-none focus-within:border-accent/50 focus-within:ring-1 
-                                focus-within:ring-accent/20 transition-all duration-100 sm:w-80 sm:pl-3.5"
+                                focus-within:ring-accent/20 transition-all duration-100 sm:w-100"
                     onChange={(e) => {setSearchKey(e.target.value)
                                     setShowDropdown(true)
                     }}

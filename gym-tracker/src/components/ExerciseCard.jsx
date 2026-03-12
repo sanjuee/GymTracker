@@ -16,8 +16,8 @@ const ExerciseCard = ({exercise, requestDelete}) => {
                         tracking-tighter rounded-b-xl ">{exercise.name}</div>
         <button 
             onClick={() => requestDelete(exercise)}
-            className="absolute top-2 right-2 p-2 bg-black/80 backdrop-blur-md rounded-full 
-             text-red-500 hover:bg-black/60 transition-all cursor-pointer"
+            className="absolute top-2 right-2 p-2 bg-black/70 backdrop-blur-md rounded-full 
+             text-red-500 hover:bg-black hover:text-red-700 transition-all cursor-pointer"
             ><Trash2 size={16} />
         </button>
         </div>

@@ -1,13 +1,16 @@
-import { Search, X, Plus } from "lucide-react"
 import SearchBar from "./SearchBar"
+import { X, Plus } from "lucide-react"
 import { useState } from "react"
 import { supabase } from "../lib/supabaseClient"
+import { useNavigate } from "react-router-dom"
+
 
 const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, onExerciseAdded}) => {
 
     const [selectedExercise,setSelectedExercise] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
-  
+
+    const navigate = useNavigate()
 
     const handleAddToLog = async() =>{
 
@@ -77,9 +80,9 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                 <SearchBar onSelect={(item) => setSelectedExercise(item)}
                            searchFilterCategory={exerciseCategory}/>
                 {!isLoading ? (
-                    <button onClick={handleAddToLog} className="w-full bg-accent text-black py-3 rounded-xl font-bold
+                    <button onClick={handleAddToLog} className="w-full bg-accent text-zinc-900 py-3 rounded-xl font-bold font-outfit
                                     hover:opacity-90 transition-all flex items-center justify-center gap-2
-                                    shadow-lg shadow-accent/10 active:scale-[0.98]">
+                                    shadow-lg shadow-accent/10 active:scale-[0.98] cursor-pointer">
                         <Plus size={18} strokeWidth={3} />
                         Add to Log
                     </button>
@@ -95,7 +98,8 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                 <div className="pt-2 border-t border-zinc-800/50 mt-2 text-center">
                     <p className="text-zinc-500 text-sm">
                         Cant find it? 
-                        <button className="text-accent font-medium ml-1 hover:underline underline-offset-4"> 
+                        <button className="text-accent font-medium ml-1 hover:underline underline-offset-4"
+                                onClick={() => navigate("/create-custom-exercise")}> 
                             Create custom exercise
                         </button>
                     </p>

@@ -1,9 +1,9 @@
-import { CircleUserRound, LogOut  } from "lucide-react"
 import SearchBar from "../SearchBar"
+import { CircleUserRound, LogOut  } from "lucide-react"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "../../lib/supabaseClient"
-import ToastMessage from "../toastMessage"
+
 
 
 const Header = () => {
