@@ -21,6 +21,7 @@ const Home = () => {
     const [showAddExerciseToast,setAddExerciseToast] = useState(false)
     const [addExerciseButton, setAddExerciseButton] = useState(false)
     const [exerciseCategory, setExerciseCategory] = useState(null)
+    const [loadingExercsie, setLoadingExercise] = useState(false)
 
 
     useEffect(()=>{
@@ -46,41 +47,44 @@ const Home = () => {
 
         if (!user) return
         
+        setLoadingExercise(true)
         const getUserExerciseData = async () => {
-            const { error, data } = await supabase
-                .from("user_exercises")
-                .select(`
-                    id, 
-                    exercise_id, 
-                        exercises (
-                            name, 
-                            image_urls, 
-                            category,
-                            main_muscle
-                        )
-                `)
-                .eq("user_id", user.id)     
-
-            if (error) {
-                console.error("Query Error:", error.message)
-                return
-            }
-
-
-            const grouped = data.reduce((acc, item) => {
-                const category = item.exercises?.category || "Other"
-                if (!acc[category]) acc[category] = []
+            try {
+                const { error, data } = await supabase
+                    .from("user_exercises")
+                    .select(`
+                        id, 
+                        exercise_id, 
+                            exercises (
+                                name, 
+                                image_urls, 
+                                category,
+                                main_muscle
+                            )
+                    `)
+                    .eq("user_id", user.id)     
                 
-                acc[category].push({
-                    id: item.id,
-                    exercise_id: item.exercise_id,
-                    name: item.exercises?.name,
-                    muscle: item.exercises?.main_muscle,
-                    image: item.exercises?.image_urls?.[0]
-                });
-                return acc;
-            }, {});
-            setExerciseData(grouped)
+                if (error) {
+                    console.error("Query Error:", error.message)
+                    return
+                }
+                const grouped = data.reduce((acc, item) => {
+                    const category = item.exercises?.category || "Other"
+                    if (!acc[category]) acc[category] = []
+                    
+                    acc[category].push({
+                        id: item.id,
+                        exercise_id: item.exercise_id,
+                        name: item.exercises?.name,
+                        muscle: item.exercises?.main_muscle,
+                        image: item.exercises?.image_urls?.[0]
+                    });
+                    return acc;
+                }, {});
+                setExerciseData(grouped)
+            } finally {
+                setLoadingExercise(false)
+            }
         }
         getUserExerciseData()
     },[user])
@@ -144,7 +148,15 @@ const Home = () => {
 
 
     return (
-            <>  <Header/>
+            <>  
+                <Header/>
+                {loadingExercsie && 
+                    <div className="flex min-h-screen items-center justify-center -mt-20">
+                        <div className="flex flex-row items-center gap-2">
+                            <div className="w-6 h-6 border-3 border-accent border-t-transparent rounded-full animate-spin"></div>
+                            <p className="text-xl font-outfit">Loading</p>
+                        </div>
+                    </div>}
                 {Object.entries(exerciseData).map(([category, exercises])=>(
                         <ExerciseRow
                             key={category}

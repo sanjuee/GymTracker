@@ -10,8 +10,6 @@ const Auth = () => {
     const [isSignUp, setIsSignUp] = useState(true)
     const [error, setError] = useState(null)
     const [isLoading, setIsLoading] = useState(false)
-    
-
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [username, setUsername] = useState("")
@@ -66,8 +64,6 @@ const Auth = () => {
 
     return(
         <div className="  min-h-screen bg-app-bg-dark flex items-center justify-center p-4">
-
-            
             <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 p-8 rounded-2xl shadow-xl">
             
                 {isSignUp ? (
@@ -117,7 +113,8 @@ const Auth = () => {
                                 onChange={(e)=>setPassword(e.target.value)}
                         />
                     </div>
-
+                    {(password.length === 0) && <div className="text-red-700 text-sm -my-2">
+                            Password cannot be empty </div>}
                     {!isLoading ? (
                         <button className="w-full  bg-blue-700 text-zinc-100 font-bold p-3 rounded-lg mt-4 hover:bg-blue-400 transition-all"
                                     onClick={handleSignup}>

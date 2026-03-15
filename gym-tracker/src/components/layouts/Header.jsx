@@ -48,9 +48,10 @@ const Header = () => {
     return (
         <header className="bg-app-bg-dark/95 backdrop-blur-md px-7 border-b border-[#1B1B1B] h-16
                             flex items-center justify-between sticky top-0 z-50 gap-2 sm:px-20  ">
-            <h1 className="text-accent text-2xl  font-montserrat font-light tracking-tighter cursor-pointer">
+            <div className="text-accent text-2xl  font-montserrat font-light tracking-tighter cursor-pointer"
+                 onClick={() => navigate("/")}>
                             GYM<span className="font-bold text-zinc-100">LOG</span>
-            </h1>
+            </div>
             <SearchBar/>
            <button onClick={()=> setNavAuthPage(!navAuthPage) }>
                 <CircleUserRound size={25} className="relative cursor-pointer text-zinc-300"/>
