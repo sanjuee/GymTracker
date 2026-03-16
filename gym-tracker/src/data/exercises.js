@@ -1,4 +1,3 @@
-import BenchPressMan from '../assets/exerciseImages/BenchPressMan.jpg';
 
 export const exerciseDataObj = {
   Chest: [

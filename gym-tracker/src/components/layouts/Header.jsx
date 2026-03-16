@@ -7,11 +7,11 @@ import { supabase } from "../../lib/supabaseClient"
 
 
 const Header = () => {
-
+    
+    const navigate = useNavigate()
+    
     const [isSignedIn, setIsSignedIn] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-
-    const navigate = useNavigate()
     const [navAuthPage, setNavAuthPage] = useState(false)
     const [username, setUsername] = useState("")
 

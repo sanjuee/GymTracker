@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
+import { supabase } from "../lib/supabaseClient"
 import ExerciseRow from "../components/ExerciseRow"
-import { exerciseDataObj } from "../data/exercises"
 import ConfirmDelete from "../components/ConfirmDelete"
 import ToastMessage from "../components/toastMessage"
 import Header from "../components/layouts/Header"
-import { useLocation } from "react-router-dom"
 import AddExerciseFromDatabase from "../components/AddExerciseFromDatabase"
-import { supabase } from "../lib/supabaseClient"
 
 const Home = () => {
 

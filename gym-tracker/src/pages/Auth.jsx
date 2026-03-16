@@ -113,8 +113,8 @@ const Auth = () => {
                                 onChange={(e)=>setPassword(e.target.value)}
                         />
                     </div>
-                    {(password.length === 0) && <div className="text-red-700 text-sm -my-2">
-                            Password cannot be empty </div>}
+                    {/* {(password.length === 0) && <div className="text-red-700 text-sm -my-2">
+                            Password cannot be empty </div>} */}
                     {!isLoading ? (
                         <button className="w-full  bg-blue-700 text-zinc-100 font-bold p-3 rounded-lg mt-4 hover:bg-blue-400 transition-all"
                                     onClick={handleSignup}>

@@ -98,7 +98,7 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                 <div className="pt-2 border-t border-zinc-800/50 mt-2 text-center">
                     <p className="text-zinc-500 text-sm">
                         Cant find it? 
-                        <button className="text-accent font-medium ml-1 hover:underline underline-offset-4"
+                        <button className="text-accent font-medium ml-1.5 cursor-pointer tracking-tight"
                                 onClick={() => navigate("/create-custom-exercise")}> 
                             Create custom exercise
                         </button>
