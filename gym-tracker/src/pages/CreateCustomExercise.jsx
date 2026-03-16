@@ -1,7 +1,8 @@
 import {React,  useState, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { Search, X } from 'lucide-react'
+import { Search, X, CircleArrowLeft } from 'lucide-react'
 import Header from '../components/layouts/Header'
+import { useNavigate } from 'react-router-dom'
 
 const allMuscles = [
   'Abductors',
@@ -23,20 +24,27 @@ const allMuscles = [
   'Triceps',
 ]
 
+const categoryMap = {
+  "Lower back": "Back", "Middle back": "Back", "Lats": "Back", "Traps": "Shoulders",
+  "Quadriceps": "Legs", "Hamstrings": "Legs", "Glutes": "Legs", "Calves": "Legs",
+}
+
 const CreateCustomExercise = () => {
 
+  const navigate = useNavigate()
+  
   const [user, setUser] = useState(null)
-
   const [exerciseName, setExerciseName] = useState('')
   const [mainMuscle, setMainMuscle] = useState('')
   const [secondaryMuscles, setSecondaryMuscles] = useState([])
   const [equipment, setEquipment] =  useState("")
   const [machanism, setMachanism] = useState("")
   const [instructions, setInstruction] = useState("")
-
   const [muscleSearch, setMuscleSearch] = useState('')
   const [secondarySearch, setSecondarySearch] = useState('')
   const [showMuscleList, setShowMuscleList] = useState(false)
+  const [errors, setErrors] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
           try{
@@ -58,13 +66,24 @@ const CreateCustomExercise = () => {
 
   const addCustomExercise = async() => {
 
-    const categoryMap = {
-      "Lower back": "Back", "Middle back": "Back", "Lats": "Back", "Traps": "Shoulders",
-      "Quadriceps": "Legs", "Hamstrings": "Legs", "Glutes": "Legs", "Calves": "Legs",
+
+    
+    const newErrors = {};
+    
+    if (!exerciseName.trim()) newErrors.exerciseName = "Exercise name is required";
+    if (!mainMuscle) newErrors.mainMuscle = "Please select a main muscle";
+    if (!equipment.trim()) newErrors.equipment = "Equipment is required";
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return;
     }
-
+    
+    setErrors({})
+    setIsLoading(true)
     const category = categoryMap[exerciseName] || "Other"
-
+    
     const { error } = await supabase
                         .from("exercises")
                         .insert([{
@@ -80,9 +99,10 @@ const CreateCustomExercise = () => {
        if (error) {
           console.log("Error inserting data.",error)
         }
+    setIsLoading(false)
+    navigate("/", {state : { created: true}})
   }
   
-
   const filteredMainMuscles = allMuscles.filter((m) =>
     m.toLowerCase().includes(muscleSearch.toLowerCase())
   )
@@ -98,19 +118,21 @@ const CreateCustomExercise = () => {
     )
   }
 
-  
-
   return (
     <div>
 
       <Header/>
       <div className="min-h-screen bg-black text-zinc-100 p-4 font-inter">
         <div className="max-w-xl mx-auto space-y-8 ">
-          
-          <header>
-            <h1 className="text-3xl font-bold">Create Exercise</h1>
-            <p className="text-zinc-500 text-sm">Define your custom movement details.</p>
-          </header>
+          <div className="flex flex-row justify-between  items-center mr-1.5 ">
+            <header>
+              <h1 className="text-3xl font-bold">Create Exercise</h1>
+              <p className="text-zinc-500 text-sm">Define your custom movement details.</p>
+            </header>
+            <CircleArrowLeft size={27}
+              onClick={() => navigate("/")}
+              className="hover:text-zinc-300 -mt-4"/>
+          </div>
 
           <div className="space-y-6">
             {/* Exercise Name */}
@@ -119,12 +141,14 @@ const CreateCustomExercise = () => {
               <input 
                 type="text"
                 value={exerciseName}
-                onChange={(e) => setExerciseName(e.target.value)}
+                onChange={(e) => {setExerciseName(e.target.value)
+                                if (errors.exerciseName) setErrors(prev => ({...prev, exerciseName: null}))}
+                }
                 placeholder="e.g. Archer Pushups"
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-4 px-4 
-                          outline-none focus:border-accent/50 transition-all"
-                required
+                className={`w-full bg-zinc-900/80 border rounded-2xl py-4 px-4 outline-none transition-all ${
+                            errors.exerciseName ? "border-red-500 focus:border-red-500" : "border-zinc-800 focus:border-accent/50"}`}
               />
+              {(errors.exerciseName) && <p className="text-red-800 text-sm ml-2.5 -mb-4">{errors.exerciseName}</p>}
             </div>
 
             {/* Main Muscle - Searchable Input */}
@@ -142,14 +166,14 @@ const CreateCustomExercise = () => {
                   }}
                   onFocus={() => setShowMuscleList(true)}
                   placeholder="Search muscle group..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-4 pl-12 pr-4 outline-none 
-                            focus:border-accent/50 transition-all"
-                  required
+                  className={`w-full bg-zinc-900/80 border  rounded-2xl py-4 pl-12 pr-4 outline-none transition-all
+                            ${errors.mainMuscle ? "border-red-500" : "border-zinc-800 focus:border-accent/50 "}`}
                 />
               </div>
+              {(errors.mainMuscle) && <p className="text-red-800 text-sm ml-2.5 -mb-4">{errors.mainMuscle}</p>}
               
               {showMuscleList && (
-                <div className="absolute top-full left-0 w-full mt-2 bg-zinc-900 border border-zinc-800
+                <div className="absolute top-full left-0 w-full mt-2 bg-zinc-900/98 border border-zinc-800
                               rounded-2xl shadow-2xl z-50 max-h-48 overflow-y-auto p-2 custom-scrollbar">
                   {filteredMainMuscles.map((m) => (
                     <button 
@@ -158,6 +182,7 @@ const CreateCustomExercise = () => {
                         setMainMuscle(m)
                         setMuscleSearch('')
                         setShowMuscleList(false)
+                        if (errors.mainMuscle) setErrors(prev => ({...prev, mainMuscle: null}))
                       }}
                       className="w-full text-left px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors text-sm"
                     >
@@ -196,7 +221,7 @@ const CreateCustomExercise = () => {
                   placeholder="Add secondary muscles..."
                   value={secondarySearch}
                   onChange={(e) => setSecondarySearch(e.target.value)}
-                  className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl py-3 px-4 text-sm outline-none focus:border-zinc-600 transition-all"
+                  className="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl py-3 px-4 text-sm outline-none focus:border-accent transition-all"
                 />
               </div>
 
@@ -224,14 +249,14 @@ const CreateCustomExercise = () => {
                   <input type="text" 
                     placeholder="Barbell" 
                     onChange={(e) => setEquipment(e.target.value)}
-                    className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-3 px-4 outline-none text-sm"/>
+                    className="w-full bg-zinc-900/80 border border-zinc-800 rounded-2xl py-3 px-4 outline-none text-sm"/>
               </div>
               <div className="space-y-2">
                   <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Machanism</label>
                   <input type="text" 
                       placeholder="Compount/Isolate"
                       onChange={(e) => setMachanism(e.target.value)}
-                      className="w-full bg-zinc-900 border border-zinc-800 rounded-2xl py-3 px-4 outline-none text-sm"/>
+                      className="w-full bg-zinc-900/80 border border-zinc-800 rounded-2xl py-3 px-4 outline-none text-sm"/>
               </div>
             </div>
 
@@ -240,17 +265,23 @@ const CreateCustomExercise = () => {
               <textarea rows="3" 
               placeholder="Describe the movement"
               onChange={(e) => setInstruction(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-800 
-                                  rounded-2xl py-4 px-4 outline-none focus:border-accent/50 resize-none text-sm"/>
+              className="w-full bg-zinc-900/80 border border-zinc-800 
+                          rounded-2xl py-4 px-4 outline-none focus:border-accent/50 resize-none text-sm"/>
             </div>
 
             {/* Action */}
-            <button 
-            onClick={addCustomExercise}
-            className="w-full bg-accent text-black font-bold py-4 rounded-2xl 
-                              shadow-lg shadow-accent/10 hover:opacity-90 active:scale-[0.99] transition-all">
-              Save Exercise
-            </button>
+            {!isLoading ? (
+                <button 
+                  onClick={addCustomExercise}
+                  className="w-full bg-accent text-black font-bold py-4 rounded-2xl 
+                                    shadow-lg shadow-accent/10 hover:opacity-90 active:scale-[0.99] transition-all">
+                    Save Exercise
+                </button>
+                  ) : (
+                <button className="w-full bg-blue-900/80 text-black py-4 rounded-xl font-bold
+                        transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/10 cursor-none">
+                    <div className="w-6 h-6 border-2 border-black border-t-transparent  rounded-full animate-spin"></div>
+                </button>)}
           </div>
         </div>
       </div>

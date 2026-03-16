@@ -21,6 +21,7 @@ const Home = () => {
     const [addExerciseButton, setAddExerciseButton] = useState(false)
     const [exerciseCategory, setExerciseCategory] = useState(null)
     const [loadingExercsie, setLoadingExercise] = useState(false)
+    const [showCustomAddToast, setShowCustomAddToast] = useState(false)
 
 
     useEffect(()=>{
@@ -92,13 +93,18 @@ const Home = () => {
         if (location.state?.toastMsg){
             setSignInMessageToast(location.state.toastMsg)
             setShowSignInToast(true)
-
             const timer = setTimeout(() => setShowSignInToast(false), 3000)
-
             window.history.replaceState({}, document.title)
-
             return () => clearTimeout(timer)
         }
+        
+        if (location.state?.created){
+            setShowCustomAddToast(true)
+            const timer = setTimeout(() => setShowCustomAddToast(false), 3000)
+            window.history.replaceState({}, document.title)
+            return () => clearTimeout(timer)
+        }
+
     },[location])
 
     const requestDelete = (exerciseID) => {
@@ -186,6 +192,7 @@ const Home = () => {
                 {showDeleteToast && <ToastMessage message="Exercise Deleted !"/>}
                 {showSignInToast && <ToastMessage message={signInMessageToast}/>}
                 {showAddExerciseToast && <ToastMessage message={"Exercise Added!"}/>}
+                {showCustomAddToast && <ToastMessage message={"Exercise Created!"}/>}
             
             </>
         
