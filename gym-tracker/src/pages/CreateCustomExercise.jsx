@@ -70,14 +70,14 @@ const CreateCustomExercise = () => {
     
     const newErrors = {};
     
-    if (!exerciseName.trim()) newErrors.exerciseName = "Exercise name is required";
-    if (!mainMuscle) newErrors.mainMuscle = "Please select a main muscle";
-    if (!equipment.trim()) newErrors.equipment = "Equipment is required";
+    if (!exerciseName.trim()) newErrors.exerciseName = "Exercise name is required"
+    if (!mainMuscle) newErrors.mainMuscle = "Please select a main muscle"
+    if (!equipment.trim()) newErrors.equipment = "Equipment is required"
     
     if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+      setErrors(newErrors)
       window.scrollTo({ top: 0, behavior: 'smooth' })
-      return;
+      return
     }
     
     setErrors({})
@@ -167,7 +167,7 @@ const CreateCustomExercise = () => {
                   onFocus={() => setShowMuscleList(true)}
                   placeholder="Search muscle group..."
                   className={`w-full bg-zinc-900/80 border  rounded-2xl py-4 pl-12 pr-4 outline-none transition-all
-                            ${errors.mainMuscle ? "border-red-500" : "border-zinc-800 focus:border-accent/50 "}`}
+                            ${errors.mainMuscle ? "border-red-500" : "border-zinc-800focus:border-accent/50 "}`}
                 />
               </div>
               {(errors.mainMuscle) && <p className="text-red-800 text-sm ml-2.5 -mb-4">{errors.mainMuscle}</p>}
