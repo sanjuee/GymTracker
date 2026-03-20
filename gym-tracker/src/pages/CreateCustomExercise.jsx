@@ -25,8 +25,24 @@ const allMuscles = [
 ]
 
 const categoryMap = {
-  "Lower back": "Back", "Middle back": "Back", "Lats": "Back", "Traps": "Shoulders",
-  "Quadriceps": "Legs", "Hamstrings": "Legs", "Glutes": "Legs", "Calves": "Legs",
+  "Lats": "Back",
+  "Lower Back": "Back",
+  "Middle Back": "Back",
+  "Traps": "Shoulders",
+  "Quadriceps": "Legs",
+  "Quads": "Legs", 
+  "Hamstrings": "Legs",
+  "Glutes": "Legs",
+  "Calves": "Legs",
+  "Biceps": "Arms",
+  "Triceps": "Arms",
+  "Forearms": "Arms",
+  "Chest": "Chest"
+}
+const toTitleCase = (str) => {
+  return str.toLowerCase().split(' ').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1)
+  ).join(' ');
 }
 
 const mechanismOption = ["Compound", "Isolate"]
@@ -68,7 +84,7 @@ const CreateCustomExercise = () => {
         },[])
 
     const addCustomExercise = async() => {
-              const newErrors = {};
+              const newErrors = {}
               
               if (!exerciseName.trim()) newErrors.exerciseName = "Exercise name is required"
               if (!mainMuscle) newErrors.mainMuscle = "Please select a main muscle"
@@ -83,23 +99,34 @@ const CreateCustomExercise = () => {
               
               setErrors({})
               setIsLoading(true)
-              const category = categoryMap[exerciseName] || "Other"
-              
-              const { error } = await supabase
+              const category = categoryMap[mainMuscle] || "Other"
+              const exerciseImageUrl = `https://placehold.co/600x400/141414/white?text=${exerciseName.trim().split().join("+")}`
+
+              const { error: insertExerciseError, data } = await supabase
                                   .from("exercises")
                                   .insert([{
-                                    name : exerciseName,
+                                    name : toTitleCase(exerciseName.trim()),
                                     main_muscle : mainMuscle,
                                     secondary_muscles : secondaryMuscles,
-                                    equipment : equipment,
-                                    instructions: instructions,
+                                    equipment : toTitleCase(equipment.trim()),
+                                    instructions: instructions.trim(),
                                     mechanic : mechanism,
                                     category: category,
+                                    image_urls : [exerciseImageUrl],
                                     created_by : user.id,
-                                  }])
-              if (error) {
-                console.log("Error inserting data.",error)
+                                  }]).select("id")
+                                  .single()
+              console.log(data)
+              const { error :insertUserExerciseError } = await supabase
+                                                 .from("user_exercises")
+                                                 .insert([{
+                                                     user_id : user.id,
+                                                     exercise_id : data.id
+                                                 }])
+              if (insertUserExerciseError ) {
+                console.log("Error inserting data.", insertUserExerciseError.message)
               }
+
               setIsLoading(false)
               navigate("/", {state : { created: true}})
             }
@@ -150,7 +177,7 @@ const CreateCustomExercise = () => {
               />
               {(errors.exerciseName) && <p className="text-red-800 text-sm ml-2.5 -mb-4">{errors.exerciseName}</p>}
             </div>
-
+          
             {/* Main Muscle - Searchable Input */}
             <div className="space-y-2 relative">
               <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Main Muscle Group</label>
@@ -231,19 +258,20 @@ const CreateCustomExercise = () => {
 
               {/* 5. Horizontal scroll or small grid for suggestions */}
               <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto py-1 custom-scrollbar">
-                {filteredSecondarySuggestions.map((m) => ( // Show top 8 suggestions
+                {filteredSecondarySuggestions.map((m) => {
+                  if (mainMuscle !== m) return (
                   <button
                     key={m}
                     onClick={() => {
                         toggleSecondaryMuscle(m);
-                        setSecondarySearch('') // Clear search after picking
+                        setSecondarySearch('') 
                     }}
                     className="px-3 py-1.5 rounded-full text-sm font-medium border border-zinc-800
                                text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-all"
                   >
                     + {m}
-                  </button>
-                ))}
+                  </button>)
+                })}
                 {(filteredSecondarySuggestions.length === 0) && 
                     <button  className="px-3 py-1.5 rounded-full text-xs font-medium border border-zinc-800
                                text-red-700 cursor-not-allowed  flex flex-row items-center gap-0.5">
@@ -283,6 +311,7 @@ const CreateCustomExercise = () => {
                               rounded-2xl shadow-2xl z-50 max-h-48 overflow-y-auto p-2 custom-scrollbar"> 
                             {mechanismOption.map( (m) => (
                               <button className="w-full text-left px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors text-sm"
+                                      key={m}
                                       onClick={() => {
                                         setMechanismInputFocus(false) 
                                         setMechanism(m)
@@ -323,7 +352,7 @@ const CreateCustomExercise = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default CreateCustomExercise
