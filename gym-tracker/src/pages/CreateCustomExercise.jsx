@@ -1,6 +1,6 @@
 import {React,  useState, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import { Search, X, CircleArrowLeft } from 'lucide-react'
+import { Search, X, CircleArrowLeft, Info } from 'lucide-react'
 import Header from '../components/layouts/Header'
 import { useNavigate } from 'react-router-dom'
 
@@ -29,98 +29,98 @@ const categoryMap = {
   "Quadriceps": "Legs", "Hamstrings": "Legs", "Glutes": "Legs", "Calves": "Legs",
 }
 
+const mechanismOption = ["Compound", "Isolate"]
+
 const CreateCustomExercise = () => {
 
-  const navigate = useNavigate()
-  
-  const [user, setUser] = useState(null)
-  const [exerciseName, setExerciseName] = useState('')
-  const [mainMuscle, setMainMuscle] = useState('')
-  const [secondaryMuscles, setSecondaryMuscles] = useState([])
-  const [equipment, setEquipment] =  useState("")
-  const [machanism, setMachanism] = useState("")
-  const [instructions, setInstruction] = useState("")
-  const [muscleSearch, setMuscleSearch] = useState('')
-  const [secondarySearch, setSecondarySearch] = useState('')
-  const [showMuscleList, setShowMuscleList] = useState(false)
-  const [errors, setErrors] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
+    
+    const [user, setUser] = useState(null)
+    const [exerciseName, setExerciseName] = useState('')
+    const [mainMuscle, setMainMuscle] = useState('')
+    const [secondaryMuscles, setSecondaryMuscles] = useState([])
+    const [equipment, setEquipment] =  useState("")
+    const [mechanism, setMechanism] = useState("")
+    const [instructions, setInstruction] = useState("")
+    const [muscleSearch, setMuscleSearch] = useState('')
+    const [secondarySearch, setSecondarySearch] = useState('')
+    const [showMuscleList, setShowMuscleList] = useState(false)
+    const [mechanismInputFocus, setMechanismInputFocus] = useState(false)
+    const [errors, setErrors] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
 
-  useEffect(() => {
-          try{
-              const getUserData = async() => {
-                  const { data : {user}} = await supabase.auth.getUser()
-                  setUser(user)
+    useEffect(() => {
+            try{
+                const getUserData = async() => {
+                    const { data : {user}} = await supabase.auth.getUser()
+                    setUser(user)
+                }
+                getUserData()
+        
+                const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+                    setUser(session?.user ?? null)
+                })
+                return () => subscription.unsubscribe()
+            }
+            catch(err){
+                console.log(err)
+            }
+        },[])
+
+    const addCustomExercise = async() => {
+              const newErrors = {};
+              
+              if (!exerciseName.trim()) newErrors.exerciseName = "Exercise name is required"
+              if (!mainMuscle) newErrors.mainMuscle = "Please select a main muscle"
+              if (!equipment.trim()) newErrors.equipment = "Equipment is required"
+              if (!mechanism.trim()) newErrors.mechanism = "Please Select Mechanism"
+
+              if (Object.keys(newErrors).length > 0) {
+                setErrors(newErrors)
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+                return
               }
-              getUserData()
-      
-              const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-                  setUser(session?.user ?? null)
-              })
-              return () => subscription.unsubscribe()
-          }
-          catch(err){
-              console.log(err)
-          }
-      },[])
+              
+              setErrors({})
+              setIsLoading(true)
+              const category = categoryMap[exerciseName] || "Other"
+              
+              const { error } = await supabase
+                                  .from("exercises")
+                                  .insert([{
+                                    name : exerciseName,
+                                    main_muscle : mainMuscle,
+                                    secondary_muscles : secondaryMuscles,
+                                    equipment : equipment,
+                                    instructions: instructions,
+                                    mechanic : mechanism,
+                                    category: category,
+                                    created_by : user.id,
+                                  }])
+              if (error) {
+                console.log("Error inserting data.",error)
+              }
+              setIsLoading(false)
+              navigate("/", {state : { created: true}})
+            }
+            
+            const filteredMainMuscles = allMuscles.filter((m) =>
+              m.toLowerCase().includes(muscleSearch.toLowerCase())
+            )
 
-  const addCustomExercise = async() => {
+            const filteredSecondarySuggestions = allMuscles
+              .filter((m) => m.toLowerCase().includes(secondarySearch.toLowerCase()))
+              .filter((m) => !secondaryMuscles.includes(m))
+              .slice(0, 8)
 
-
-    
-    const newErrors = {};
-    
-    if (!exerciseName.trim()) newErrors.exerciseName = "Exercise name is required"
-    if (!mainMuscle) newErrors.mainMuscle = "Please select a main muscle"
-    if (!equipment.trim()) newErrors.equipment = "Equipment is required"
-    
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-      return
-    }
-    
-    setErrors({})
-    setIsLoading(true)
-    const category = categoryMap[exerciseName] || "Other"
-    
-    const { error } = await supabase
-                        .from("exercises")
-                        .insert([{
-                          name : exerciseName,
-                          main_muscle : mainMuscle,
-                          secondary_muscles : secondaryMuscles,
-                          equipment : equipment,
-                          instructions: instructions,
-                          mechanic : machanism,
-                          category: category,
-                          created_by : user.id,
-                        }])
-       if (error) {
-          console.log("Error inserting data.",error)
-        }
-    setIsLoading(false)
-    navigate("/", {state : { created: true}})
-  }
-  
-  const filteredMainMuscles = allMuscles.filter((m) =>
-    m.toLowerCase().includes(muscleSearch.toLowerCase())
-  )
-
-  const filteredSecondarySuggestions = allMuscles
-    .filter((m) => m.toLowerCase().includes(secondarySearch.toLowerCase()))
-    .filter((m) => !secondaryMuscles.includes(m))
-    .slice(0, 8)
-
-  const toggleSecondaryMuscle = (muscle) => {
-    setSecondaryMuscles((prev) =>
-      prev.includes(muscle) ? prev.filter((m) => m !== muscle) : [...prev, muscle]
+            const toggleSecondaryMuscle = (muscle) => {
+              setSecondaryMuscles((prev) =>
+                prev.includes(muscle) ? prev.filter((m) => m !== muscle) : [...prev, muscle]
     )
-  }
+}
 
   return (
     <div>
-
       <Header/>
       <div className="min-h-screen bg-black text-zinc-100 p-4 font-inter">
         <div className="max-w-xl mx-auto space-y-8 ">
@@ -146,7 +146,7 @@ const CreateCustomExercise = () => {
                 }
                 placeholder="e.g. Archer Pushups"
                 className={`w-full bg-zinc-900/80 border rounded-2xl py-4 px-4 outline-none transition-all ${
-                            errors.exerciseName ? "border-red-500 focus:border-red-500" : "border-zinc-800 focus:border-accent/50"}`}
+                  errors.exerciseName ? "border-red-500 focus:border-red-500" : "border-zinc-800 focus:border-accent/50"}`}
               />
               {(errors.exerciseName) && <p className="text-red-800 text-sm ml-2.5 -mb-4">{errors.exerciseName}</p>}
             </div>
@@ -206,7 +206,9 @@ const CreateCustomExercise = () => {
                     <button
                       key={m}
                       onClick={() => toggleSecondaryMuscle(m)}
-                      className="bg-accent/10 text-accent border border-accent/20 px-3 py-2 rounded-full text-sm font-bold flex items-center gap-2 group hover:bg-accent hover:text-black transition-all"
+                      className="bg-accent/10 text-accent border border-accent/20 px-3 py-2 rounded-full 
+                                  text-sm font-bold flex items-center gap-2 group hover:bg-accent 
+                                  hover:text-black transition-all"
                     >
                       {m} <X size={16} />
                     </button>
@@ -221,7 +223,9 @@ const CreateCustomExercise = () => {
                   placeholder="Add secondary muscles..."
                   value={secondarySearch}
                   onChange={(e) => setSecondarySearch(e.target.value)}
-                  className="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl py-3 px-4 text-sm outline-none focus:border-accent transition-all"
+                  className="w-full bg-zinc-900/80 border border-zinc-800 rounded-xl py-3 px-4 text-sm outline-none
+                               focus:border-accent transition-all"
+                  
                 />
               </div>
 
@@ -234,29 +238,62 @@ const CreateCustomExercise = () => {
                         toggleSecondaryMuscle(m);
                         setSecondarySearch('') // Clear search after picking
                     }}
-                    className="px-3 py-1.5 rounded-full text-sm font-medium border border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-all"
+                    className="px-3 py-1.5 rounded-full text-sm font-medium border border-zinc-800
+                               text-zinc-500 hover:border-zinc-600 hover:text-zinc-300 transition-all"
                   >
                     + {m}
                   </button>
                 ))}
+                {(filteredSecondarySuggestions.length === 0) && 
+                    <button  className="px-3 py-1.5 rounded-full text-xs font-medium border border-zinc-800
+                               text-red-700 cursor-not-allowed  flex flex-row items-center gap-0.5">
+                                  <Info size={15}/>
+                                  No muscle found!</button>}
               </div>
             </div>
 
-            {/* Equipment & Instructions (Simplified for this view) */}
+            {/* Equipment & Instructions  */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                  <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Equipment</label>
-                  <input type="text" 
-                    placeholder="Barbell" 
-                    onChange={(e) => setEquipment(e.target.value)}
-                    className="w-full bg-zinc-900/80 border border-zinc-800 rounded-2xl py-3 px-4 outline-none text-sm"/>
+              <div>
+                <div className="space-y-2">
+                    <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Equipment</label>
+                    <input type="text" 
+                      placeholder="Barbell" 
+                      onChange={(e) => {
+                        setEquipment(e.target.value)
+                        if (errors.equipment) setErrors(prev => ({...prev, equipment: null}))
+                      }}
+                      className={`w-full bg-zinc-900/80 border  rounded-2xl py-3 px-4 outline-none text-sm
+                        ${errors.equipment ? "border-red-500 focus:border-red-500" : "border-zinc-800 focus:border-accent/50"}`}/>
+                </div>
+                {(errors.equipment) && <p className="text-red-800 text-xs ml-3 -mb-4.5 mt-0.5"> {errors.equipment}</p>}
               </div>
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                   <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Machanism</label>
                   <input type="text" 
+                      value={mechanism}
                       placeholder="Compount/Isolate"
-                      onChange={(e) => setMachanism(e.target.value)}
-                      className="w-full bg-zinc-900/80 border border-zinc-800 rounded-2xl py-3 px-4 outline-none text-sm"/>
+                      onChange={(e) => setMechanism(e.target.value)}
+                      onClick={() => setMechanismInputFocus(true)}
+                      className={`w-full bg-zinc-900/80 border  rounded-2xl py-3 px-4 outline-none text-sm
+                        ${errors.mechanism ? "border-red-500 focus:border-red-500" : "border-zinc-800 focus:border-accent/50"}`}/>
+
+                      {mechanismInputFocus && (
+                          <div className="absolute top-full left-0 w-full mt-2 bg-zinc-900/98 border border-zinc-800
+                              rounded-2xl shadow-2xl z-50 max-h-48 overflow-y-auto p-2 custom-scrollbar"> 
+                            {mechanismOption.map( (m) => (
+                              <button className="w-full text-left px-4 py-3 hover:bg-zinc-800 rounded-xl transition-colors text-sm"
+                                      onClick={() => {
+                                        setMechanismInputFocus(false) 
+                                        setMechanism(m)
+                                        if (errors.mechanism) setErrors(prev => ({...prev, mechanism: null}))
+                                }}>
+                                    {m}
+                              </button>
+                            ))}
+                          </div>
+                      )} 
+              {(errors.mechanism) && <p className="text-red-800 text-xs ml-4 -mt-[4.5px] -mb-4.5">{errors.mechanism}</p>}
               </div>
             </div>
 
@@ -279,7 +316,7 @@ const CreateCustomExercise = () => {
                 </button>
                   ) : (
                 <button className="w-full bg-blue-900/80 text-black py-4 rounded-xl font-bold
-                        transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/10 cursor-none">
+                        transition-all flex items-center justify-center gap-2 shadow-lg shadow-accent/10 cursor-not-allowed">
                     <div className="w-6 h-6 border-2 border-black border-t-transparent  rounded-full animate-spin"></div>
                 </button>)}
           </div>
