@@ -18,8 +18,8 @@
   --color-card-bg: #1b1b1b;
   --color-accent: oklch(62.3% 0.214 259.815) ;
   --color-border: #2d2d2d;
-  --font-inter: "Inter";
-  --font-outfit: "Outfit";
+  --font-inter: "Inter","sans";
+  --font-outfit: "Outfit",  "arial";
   --font-bebas: "Bebas Neue";
   --font-urbanist: "urbanist";
   --font-montserrat: "montserrat"; 

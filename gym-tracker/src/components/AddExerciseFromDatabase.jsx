@@ -80,7 +80,8 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                 <SearchBar onSelect={(item) => setSelectedExercise(item)}
                            searchFilterCategory={exerciseCategory}/>
                 {!isLoading ? (
-                    <button onClick={handleAddToLog} className="w-full bg-accent text-zinc-900 py-3 rounded-xl font-bold font-outfit
+                    <button onClick={handleAddToLog} 
+                            className="w-full bg-accent text-zinc-900 py-3 rounded-xl font-bold font-outfit
                                     hover:opacity-90 transition-all flex items-center justify-center gap-2
                                     shadow-lg shadow-accent/10 active:scale-[0.98] cursor-pointer">
                         <Plus size={18} strokeWidth={3} />

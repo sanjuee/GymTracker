@@ -186,7 +186,7 @@ const Auth = () => {
                         onClick={() => {setIsSignUp(!isSignUp)
                                         setError(null) 
                                         setValidate({}) 
-                                    }} 
+                        }} 
                         className="text-accent cursor-pointer text-l">{isSignUp ? "Sign In" : "Create account"}</button>
                     </p>
                 </div>

@@ -34,9 +34,9 @@ const categoryMap = {
   "Hamstrings": "Legs",
   "Glutes": "Legs",
   "Calves": "Legs",
-  "Biceps": "Arms",
-  "Triceps": "Arms",
-  "Forearms": "Arms",
+  "Biceps": "Biceps",
+  "Triceps": "Triceps",
+  "Forearms": "Forearms",
   "Chest": "Chest"
 }
 const toTitleCase = (str) => {
@@ -100,7 +100,7 @@ const CreateCustomExercise = () => {
               setErrors({})
               setIsLoading(true)
               const category = categoryMap[mainMuscle] || "Other"
-              const exerciseImageUrl = `https://placehold.co/600x400/141414/white?text=${exerciseName.trim().split().join("+")}`
+              const exerciseImageUrl = `https://placehold.co/600x400/141414/white?text=${toTitleCase(exerciseName.trim()).split().join("+")}`
 
               const { error: insertExerciseError, data } = await supabase
                                   .from("exercises")
@@ -301,6 +301,7 @@ const CreateCustomExercise = () => {
                   <input type="text" 
                       value={mechanism}
                       placeholder="Compount/Isolate"
+                      readOnly={true}
                       onChange={(e) => setMechanism(e.target.value)}
                       onClick={() => setMechanismInputFocus(true)}
                       className={`w-full bg-zinc-900/80 border  rounded-2xl py-3 px-4 outline-none text-sm
