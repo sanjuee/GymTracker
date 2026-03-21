@@ -1,9 +1,10 @@
-import ExerciseCard from "./ExerciseCard"
 import { CirclePlus } from "lucide-react"
+import ExerciseCard from "./ExerciseCard"
 
 
-function ExerciseRow({ title, exercises, requestDelete, 
-                        setAddExercise: setAddExerciseButton, setExerciseCategory}) {
+const ExerciseRow = ({ title, exercises, requestDelete, setAddExercise: setAddExerciseButton,
+                     setExerciseCategory}) => {
+
 
     return (
         <section className="mb-2">

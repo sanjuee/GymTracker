@@ -11,11 +11,11 @@ import AddExerciseFromDatabase from "../components/AddExerciseFromDatabase"
 const muscleGroupList = [
     "Back",
     "Chest",
+    "Legs",
+    "Shoulders",
     "Biceps",
     "Triceps",
-    "Shoulders",
     "Abdominals",
-    "Legs",
     "Other"
 ]
 
