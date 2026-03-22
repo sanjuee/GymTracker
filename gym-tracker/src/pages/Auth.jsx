@@ -76,7 +76,6 @@ const Auth = () => {
         }
     }
 
-
     return(
         <div className="  min-h-screen bg-app-bg-dark flex items-center justify-center p-4">
             <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 p-8 rounded-2xl shadow-xl">
@@ -84,21 +83,17 @@ const Auth = () => {
                 {isSignUp ? (
                     <div className="mb-5">
                         <div className="flex justify-between  items-center mb-4">
-                            <h1 className="text-accent/70 text-4xl  font-montserrat font-light tracking-tighter cursor-pointer ">
-                                                GYM<span className="font-bold text-zinc-100">LOG</span></h1>
-                            {/* <button onClick={handleBack} className="cursor-pointer text-white/70  ">
-                                    <CircleArrowLeft size={25}/> </button> */}
+                            <div className="text-4xl text-accent/80 font-black text-primary font-headline 
+                            italic tracking-tighter">GYM<span className="text-zinc-50/70">LOG</span></div>
                         </div>
                         <h1 className="text-3xl font-semibold font-inter text-white/90 tracking-tight">Create your account </h1>
                     </div>
                 ) : (
                     <div className="mb-5">
                         <div className="flex   items-center mb-4">
-                            <h1 className="text-accent/70 text-4xl  font-montserrat font-light tracking-tighter cursor-pointer ">
-                                                GYM<span className="font-bold text-zinc-100">LOG</span></h1>
-                            {/* <button onClick={handleBack} className="cursor-pointer text-white/70 mr-2">
-                                    <CircleArrowLeft size={25}/> </button> */}
-                        </div>
+                            <div className="text-4xl text-accent/80 font-black text-primary font-headline 
+                                            italic tracking-tighter">GYM<span className="text-zinc-50/70">LOG</span></div>
+                            </div>
                         <h1 className="text-3xl font-semibold font-inter text-white/90 tracking-tight">Sign In </h1>
                     </div>
                 )}

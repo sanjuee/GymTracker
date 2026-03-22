@@ -45,7 +45,7 @@ const toTitleCase = (str) => {
   ).join(' ');
 }
 
-const mechanismOption = ["Compound", "Isolate"]
+const mechanismOption = ["Compound", "Isolation"]
 
 const CreateCustomExercise = () => {
 
@@ -108,7 +108,7 @@ const CreateCustomExercise = () => {
                                     name : toTitleCase(exerciseName.trim()),
                                     main_muscle : mainMuscle,
                                     secondary_muscles : secondaryMuscles,
-                                    equipment : toTitleCase(equipment.trim()),
+                                    equipment : equipment.trim(),
                                     instructions: instructions.trim(),
                                     mechanic : mechanism,
                                     category: category,
@@ -300,7 +300,7 @@ const CreateCustomExercise = () => {
                   <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Machanism</label>
                   <input type="text" 
                       value={mechanism}
-                      placeholder="Compount/Isolate"
+                      placeholder="Compount/Isolation"
                       readOnly={true}
                       onChange={(e) => setMechanism(e.target.value)}
                       onClick={() => setMechanismInputFocus(true)}
