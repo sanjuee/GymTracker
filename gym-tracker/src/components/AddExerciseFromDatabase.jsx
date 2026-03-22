@@ -70,10 +70,10 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
 
                 <div className="space-y-1">
                     <h2 className="text-xl font-semibold tracking-tight text-zinc-100">
-                        Add Exercise
+                        Add {exerciseCategory} Movements
                     </h2>
                     <p className="text-zinc-500 text-sm">
-                        Search our database for popular {exerciseCategory} movements
+                        Search our database for popular {exerciseCategory} exercise
                     </p>
                 </div>
 

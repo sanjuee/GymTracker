@@ -173,14 +173,15 @@ const Home = () => {
 
    const addMusclegroup = (newMuscleGroup) => {
 
-             if (exerciseData[newMuscleGroup]) return;
+            if (exerciseData[newMuscleGroup]) return;
 
             setExerciseData( (prev) => ({
                 ...prev, 
                 [newMuscleGroup] : []
             }))
-
+            
             setShowMuscleGroupList(!showMuscleGoupList)
+            setAddExerciseButton(true)
    }
 
     return (

@@ -9,10 +9,16 @@ const SearchBar = ({onSelect, searchFilterCategory}) =>{
     const [result, setResult] = useState([])
     const [loading, setLoading] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false)
+    const [isSelected, setIsSelected] = useState(false)
 
     useEffect(() => {
         const fetchExercise = async () => {
             
+            if (isSelected){
+                setIsSelected(false)
+                return
+            }
+
             if (searchKey.length < 3){
                 setResult([])
                 setLoading(false)
@@ -84,6 +90,7 @@ const SearchBar = ({onSelect, searchFilterCategory}) =>{
                                     setResult([])
                                     setShowDropdown(false)
                                     setSearchKey(items.name)
+                                    setIsSelected(true)
                                 }}
                                 className="w-full text-left px-4 py-3 text-l text-zinc-300 hover:bg-zinc-800 hover:text-white 
                                                 transition-colors border-b border-zinc-800 last:border-0">

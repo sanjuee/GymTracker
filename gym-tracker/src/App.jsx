@@ -2,7 +2,7 @@ import { Routes, Route, BrowserRouter } from "react-router-dom"
 import Home from "./pages/Home"
 import Auth from "./pages/Auth"
 import CreateCustomExercise from "./pages/CreateCustomExercise"
-import ExerciseDetails from "./pages/exerciseDetails"
+import ExerciseDetails from "./pages/ExerciseDetails"
 
 const App = () => {
   

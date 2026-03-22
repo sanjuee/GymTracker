@@ -8,7 +8,7 @@ const ExerciseCard = ({exercise, requestDelete}) => {
     return (
         <div className="relative shrink-0 bg-[#131313] w-45 h-40 border border-zinc-800 
                         rounded-2xl rounded-b-none hover:border-accent/50  cursor-pointer"
-            onClick={() =>navigator(`exercise/${exercise.id}`)}>
+            onClick={() =>navigator(`exercise/${exercise.exercise_id}`)}>
                     <img 
                         src={exercise.image}
                         alt={exercise.name}
