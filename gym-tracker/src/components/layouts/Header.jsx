@@ -46,9 +46,13 @@ const Header = () => {
     }, [navAuthPage, isSignedIn, navigate]) 
             
     return (
-        <header className="bg-app-bg-dark/95 backdrop-blur-md px-7 border-b border-[#1B1B1B] h-16
+        <header className="bg-app-bg-dark/80 backdrop-blur-md px-7 border-b border-[#1B1B1B] h-16
                             flex items-center justify-between sticky top-0 z-50 gap-2 sm:px-20  ">
-            <div className="text-2xl text-accent font-black text-primary font-headline italic tracking-tighter">GYM<span className="text-zinc-50">LOG</span></div>
+             <div className="text-2xl font-black text-primary font-headline italic tracking-tighter cursor-pointer"
+                     onClick={() => navigate("/")}>
+                    GYM<span className="text-accent">LOG</span>
+            </div>
+
             <SearchBar onSelect={(exe) => navigate(`/exercise/${exe.id}`)}/>
            <button onClick={()=> setNavAuthPage(!navAuthPage) }>
                 <CircleUserRound size={25} className="relative cursor-pointer text-zinc-300"/>

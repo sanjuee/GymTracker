@@ -34,7 +34,7 @@ const Home = () => {
     const [exerciseCategory, setExerciseCategory] = useState(null)
     const [loadingExercsie, setLoadingExercise] = useState(false)
     const [showCustomAddToast, setShowCustomAddToast] = useState(false)
-    const [existingCategory, setExistingCategoryList] = useState([])
+    // const [existingCategory, setExistingCategoryList] = useState([])
     const [showMuscleGoupList, setShowMuscleGroupList] = useState(false)
 
 
@@ -122,9 +122,9 @@ const Home = () => {
 
     },[location])
 
-    useEffect(()=> {
-            setExistingCategoryList(Object.keys(exerciseData))
-    },[exerciseData])
+    // useEffect(()=> {
+    //         setExistingCategoryList(Object.keys(exerciseData))
+    // },[exerciseData])
 
     const requestDelete = (exerciseID) => {
         setExerciseToDelete(exerciseID)

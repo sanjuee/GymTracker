@@ -18,7 +18,10 @@ const ExerciseCard = ({exercise, requestDelete}) => {
             <div className=" w-45 h-13.5 bg-zinc-800 text-zinc-100 flex items-center justify-center text-center text-inter text-[17.5px] 
                             tracking-tighter rounded-b-xl ">{exercise.name}</div>
             <button 
-                onClick={() => requestDelete(exercise)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    requestDelete(exercise);
+                }}
                 className="absolute top-2 right-2 p-2 bg-black/70 backdrop-blur-md rounded-full 
                 text-red-500 hover:bg-black hover:text-red-700 transition-all cursor-pointer"
                 ><Trash2 size={16} />

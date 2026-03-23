@@ -153,7 +153,7 @@ const CreateCustomExercise = () => {
         <div className="max-w-xl mx-auto space-y-8 ">
           <div className="flex flex-row justify-between  items-center mr-1.5 ">
             <header>
-              <h1 className="text-3xl font-bold">Create Exercise</h1>
+              <h1 className="text-4xl font-semibold tracking-tight font-headline ">Create Exercise</h1>
               <p className="text-zinc-500 text-sm">Define your custom movement details.</p>
             </header>
             <CircleArrowLeft size={27}
@@ -173,9 +173,9 @@ const CreateCustomExercise = () => {
                 }
                 placeholder="e.g. Archer Pushups"
                 className={`w-full bg-zinc-900/80 border rounded-2xl py-4 px-4 outline-none transition-all ${
-                  errors.exerciseName ? "border-red-500 focus:border-red-500" : "border-zinc-800 focus:border-accent/50"}`}
+                  errors.exerciseName ? "border-red-600 focus:border-red-600" : "border-zinc-800 focus:border-accent"}`}
               />
-              {(errors.exerciseName) && <p className="text-red-800 text-sm ml-2.5 -mb-4">{errors.exerciseName}</p>}
+              {(errors.exerciseName) && <p className="text-red-600 text-md ml-2.5 -mb-4">{errors.exerciseName}</p>}
             </div>
           
             {/* Main Muscle - Searchable Input */}
@@ -194,10 +194,10 @@ const CreateCustomExercise = () => {
                   onFocus={() => setShowMuscleList(true)}
                   placeholder="Search muscle group..."
                   className={`w-full bg-zinc-900/80 border  rounded-2xl py-4 pl-12 pr-4 outline-none transition-all
-                            ${errors.mainMuscle ? "border-red-500" : "border-zinc-800focus:border-accent/50 "}`}
+                            ${errors.mainMuscle ? "border-red-600" : "border-zinc-800 focus:border-accent "}`}
                 />
               </div>
-              {(errors.mainMuscle) && <p className="text-red-800 text-sm ml-2.5 -mb-4">{errors.mainMuscle}</p>}
+              {(errors.mainMuscle) && <p className="text-red-600 text-md ml-2.5 -mb-4">{errors.mainMuscle}</p>}
               
               {showMuscleList && (
                 <div className="absolute top-full left-0 w-full mt-2 bg-zinc-900/98 border border-zinc-800
@@ -294,7 +294,7 @@ const CreateCustomExercise = () => {
                       className={`w-full bg-zinc-900/80 border  rounded-2xl py-3 px-4 outline-none text-sm
                         ${errors.equipment ? "border-red-500 focus:border-red-500" : "border-zinc-800 focus:border-accent/50"}`}/>
                 </div>
-                {(errors.equipment) && <p className="text-red-800 text-xs ml-3 -mb-4.5 mt-0.5"> {errors.equipment}</p>}
+                {(errors.equipment) && <p className="text-red-500 text-sm ml-3 -mb-4.5 mt-0.5"> {errors.equipment}</p>}
               </div>
               <div className="space-y-2 relative">
                   <label className="text-xs font-bold text-zinc-500 uppercase tracking-widest ml-1">Machanism</label>
@@ -323,7 +323,7 @@ const CreateCustomExercise = () => {
                             ))}
                           </div>
                       )} 
-              {(errors.mechanism) && <p className="text-red-800 text-xs ml-4 -mt-[4.5px] -mb-4.5">{errors.mechanism}</p>}
+              {(errors.mechanism) && <p className="text-red-500 text-sm ml-2.5 -mt-[4.5px] -mb-4.5">{errors.mechanism}</p>}
               </div>
             </div>
 
@@ -340,8 +340,8 @@ const CreateCustomExercise = () => {
             {!isLoading ? (
                 <button 
                   onClick={addCustomExercise}
-                  className="w-full bg-accent text-black font-bold py-4 rounded-2xl 
-                                    shadow-lg shadow-accent/10 hover:opacity-90 active:scale-[0.99] transition-all">
+                  className="w-full bg-accent text-zinc-100 font-outfit font-bold py-4 rounded-xl uppercase tracking-wider 
+                                text-xl shadow-xl shadow-accent/20 active:scale-[0.98] transition-all">
                     Save Exercise
                 </button>
                   ) : (
