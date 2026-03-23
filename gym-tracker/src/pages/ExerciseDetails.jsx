@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { Navigate, useNavigate, useParams } from "react-router-dom"
 import { supabase } from "../lib/supabaseClient"
 import { ChevronDown, Trash2 } from "lucide-react"
+import ImageView from "../components/ImageView"
 
 const ExerciseDetails = () => {
 
@@ -17,6 +18,7 @@ const ExerciseDetails = () => {
                 { id: 1, weight: "", reps: "" }
             ]
     })
+    const [showImage, setShowImage] = useState(null)
 
     
     useEffect(() => {
@@ -111,18 +113,29 @@ const ExerciseDetails = () => {
 
     return (
         <main className="pt-20 px-4 max-w-2xl mx-auto space-y-8 pb-20">
-            
+            {showImage && <ImageView imageUrl={showImage} onClose={() => setShowImage(null)}/>}
             <section className="">
                 <h1 className="text-5xl font-outfit font-semibold tex">{exerciseDetails.name}</h1>
                 <p className="text-accent uppercase tracking-widest text-m mt-1 font-semibold">{exerciseDetails.category}</p>
                 <div className="grid grid-cols-2 gap-3 mt-4">
-                    <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative">
-                        <img alt="Start Position" className="w-full h-full object-cover" src={exerciseDetails.image_urls[0]}/>
+                    <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
+                         onClick={() => setShowImage(exerciseDetails.image_urls[0])}>
+                        <img    alt="Start Position" 
+                                className="w-full h-full object-cover" 
+                                src={exerciseDetails.image_urls[0]}
+                                onClick={(e) => {e.stopPropagation()
+                                                 setShowImage(exerciseDetails.image_urls[0])}}/>
                         <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] 
                                 font-bold uppercase tracking-widest ">Start</div>
                     </div>
-                    <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative">
-                        <img alt="End Position" className="w-full h-full object-cover" src={exerciseDetails.image_urls[1]}/>
+                    <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
+                         onClick={() => setShowImage(exerciseDetails.image_urls[1])}>
+                        <img    alt="End Position" 
+                                className="w-full h-full object-cover" 
+                                src={exerciseDetails.image_urls[1]}
+                                onClick={(e) => {e.stopPropagation()
+                                                 setShowImage(exerciseDetails.image_urls[1])}}
+                                />
                         <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] 
                         font-bold uppercase tracking-widest">Finish</div>
                     </div>
