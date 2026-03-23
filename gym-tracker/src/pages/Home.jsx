@@ -93,9 +93,9 @@ const Home = () => {
                         name: item.exercises?.name,
                         muscle: item.exercises?.main_muscle,
                         image: item.exercises?.image_urls?.[0]
-                    });
-                    return acc;
-                }, {});
+                    })
+                    return acc
+                }, {})
                 setExerciseData(grouped)
             } finally {
                 setLoadingExercise(false)

@@ -2,14 +2,15 @@ import { useEffect, useState } from "react"
 import { Navigate, useNavigate, useParams } from "react-router-dom"
 import { supabase } from "../lib/supabaseClient"
 import { ChevronDown, Trash2, ArrowLeft, Plus } from "lucide-react"
+import { Line, Tooltip, XAxis, YAxis, LineChart, ResponsiveContainer, CartesianGrid, Legend } from "recharts"
 import ImageView from "../components/ImageView"
 
 const ExerciseDetails = () => {
 
 
     const navigate = useNavigate()
-    const [exerciseDetails, setExerciseDetails] = useState(null) 
     const { id : exerciseId } = useParams() 
+    const [exerciseDetails, setExerciseDetails] = useState(null) 
     const [loading, setIsLoading] = useState(false)
     const [user, setUser] = useState(null)
     const [exerciseSets, setExerciseSets] = useState(() => {
@@ -19,6 +20,8 @@ const ExerciseDetails = () => {
             ]
     })
     const [showImage, setShowImage] = useState(null)
+    const [workoutLog, setWorkoutLog] = useState([])
+    const [isWorkoutLogEmpty, setIsWorkoutLogEmpty] = useState(false)
 
     
     useEffect(() => {
@@ -35,19 +38,27 @@ const ExerciseDetails = () => {
     }, [])
 
     useEffect(() => {
-        const getWorkoutLog = async() => {
-            const { data: workoutLog , error } = await supabase
-                                                .from("workout_log") 
+        const getWorkoutLog = async () => {
+            if (!user) return // Safety check for null user
+
+            const { data: workoutLogData, error } = await supabase
+                                                .from("workout_log")
                                                 .select("*")
                                                 .eq("user_id", user.id)
                                                 .eq("exercise_id", exerciseId)
-                                                .order("created_at", {ascending : true})
-        }
-        if (error){ console.log("Error fetching data", error.message)}
-        getWorkoutLog()
-        
-    },[exerciseId])
+                                                .order("created_at", { ascending: true })
 
+            if (error) {
+                    console.error("Error fetching data", error.message)
+            } else if (workoutLogData) {
+                    const chartFriendlyData = transformDataForChart(workoutLogData)
+                    setWorkoutLog(chartFriendlyData)
+            }else{
+                setIsWorkoutLogEmpty(true)
+            }
+        }
+        getWorkoutLog()
+    }, [exerciseId, user])
     
     useEffect(() => {
         localStorage.setItem(`workout_${exerciseId}` , JSON.stringify(exerciseSets))
@@ -71,21 +82,47 @@ const ExerciseDetails = () => {
             }
             
             fetchDetails()
-    }, [exerciseId]) 
+    }, [ exerciseId]) 
+
+    const transformDataForChart = (logs) => {
+        const dailyMaxMap = logs.reduce((acc, log) => {
+            const date = new Date(log.created_at)
+                        .toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                        })
+
+            if (!acc[date] || log.weight > acc[date].weight) {
+                acc[date] = {
+                    date: date,
+                    weight: log.weight,
+                    fullDate: log.created_at 
+                }
+            }
+            return acc
+        }, {})
+
+        return Object.values(dailyMaxMap);
+    }
 
     const addNewExerciseSet = () => {
         const newExerciseSet = {
-            id : exerciseSets.length + 1 ,
+            id : Date.now(),
             weight : exerciseSets[exerciseSets.length -1]?.weight || "" ,
-            rep : exerciseSets[exerciseSets.length -1]?.rep || ""
+            reps : exerciseSets[exerciseSets.length -1]?.reps || ""
         }
         setExerciseSets([...exerciseSets, newExerciseSet])
     }
 
     const handleSetChange = (index, field, value) => {
-            const updatedSets = [...exerciseSets]
-            updatedSets[index][field] = value
-            setExerciseSets(updatedSets)
+            setExerciseSets((prevSets) => {
+                const newSets = [...prevSets];
+                newSets[index] = { 
+                    ...newSets[index], 
+                    [field]: value 
+                };
+                return newSets;
+            })
     }
 
     const addWorkoutLog = async() => {
@@ -115,6 +152,27 @@ const ExerciseDetails = () => {
         setIsLoading(false)
     }
 
+    const stats = (() => {
+        if (!workoutLog || workoutLog.length < 2) return { max: 0, progress: 0 };
+
+        // 1. Get All-Time Max
+        const allWeights = workoutLog.map(log => log.weight);
+        const maxWeight = Math.max(...allWeights);
+
+        // 2. Calculate Progress Percentage
+        // (Latest Weight - First Weight) / First Weight * 100
+        const firstWeight = workoutLog[0].weight;
+        const latestWeight = workoutLog[workoutLog.length - 1].weight;
+        
+        const progressPercent = firstWeight > 0 
+            ? ((latestWeight - firstWeight) / firstWeight) * 100 
+            : 0;
+
+        return {
+            max: maxWeight,
+            progress: progressPercent.toFixed(1) // Keep one decimal point
+        }
+    })()
         
     if (!exerciseDetails) return (
         <div className="flex min-h-screen items-center justify-center">
@@ -214,6 +272,64 @@ const ExerciseDetails = () => {
                         </ol>
                     </details>
                 </section>
+
+                    <section className="mx-2  mb-5">
+                        
+                    
+                        {workoutLog && workoutLog.length > 0 ? (
+                        <div>
+                            <div className="flex items-end justify-between mx-2 my-4">
+                                <div>
+                                    <span className="text-[10px] font-bold uppercase text-accent tracking-widest">Personal Record</span>
+                                    <h3 className="font-headline font-black text-4xl">{stats.max} <span className="text-xs text-on-surface-variant font-medium -ml-2">Kg</span></h3>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">Progress</span>
+                                    <p className="font-headline font-bold text-sm text-accent">{stats.progress}%</p>
+                                </div>
+                            </div>
+                            <div className="h-75 w-full bg-zinc-800/30 p-4 pl-0  rounded-2xl border border-white/5">
+                                <ResponsiveContainer width="100%" height={270} >
+                                    <LineChart data={workoutLog}
+                                                margin={{top: 15, right: 10, left: -15,bottom: 0}}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                                        <XAxis 
+                                            dataKey="date" 
+                                            stroke="#71717a" 
+                                            fontSize={12}
+                                            tickLine={false}
+                                            axisLine={false}
+                                        />
+                                        <YAxis 
+                                            stroke="#71717a" 
+                                            fontSize={12}
+                                            tickLine={false}
+                                            axisLine={false}
+                                            tickFormatter={(value) => `${value}kg`}
+                                        />
+                                        <Tooltip 
+                                            contentStyle={{ backgroundColor: '#18181b', border: '1px solid #27272a', borderRadius: '8px' }} 
+                                            itemStyle={{ color: '#3b82f6' }}
+                                        />
+                                        <Legend/>
+                                        <Line
+                                            type="monotone" 
+                                            dataKey="weight" 
+                                            stroke="#3b82f6" 
+                                            strokeWidth={3} 
+                                            dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }} 
+                                            activeDot={{ r: 6, strokeWidth: 0 }}
+                                        />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-zinc-400 italic p-10 text-center bg-zinc-900/20 rounded-2xl border border-dashed border-zinc-800">
+                            Log sets to view progress charts.
+                        </div>
+                    )}
+                </section>
                 <section className="space-y-4">
                     <div className="flex items-center justify-between">
                         <h3 className="font-outfit font-bold text-2xl uppercase tracking-tight">Workout Log</h3>
@@ -227,12 +343,12 @@ const ExerciseDetails = () => {
                         </button>
                     </div>
                     {exerciseSets.map((set,i) => ( 
-                        <div key={i} 
+                        <div key={set.id} 
                             className="space-y-3">
                             <div  className="flex items-center gap-3 bg-zinc-900 p-4 rounded-xl border border-white/5">
                                 <div className="w-10 h-10 flex items-center justify-center bg-black rounded-xl font-outfit font-bold 
                                             text-accent border border-accent/50">
-                                                {set.id}
+                                                {i + 1}
                                 </div>
                                 <div className="flex-1 grid grid-cols-2 gap-3">
                                     <div className="space-y-1">
@@ -240,9 +356,10 @@ const ExerciseDetails = () => {
                                         <input  className="w-full bg-black border border-white/10 rounded-lg p-2 font-outfit 
                                                             font-bold text-white text-lg outline-none focus:ring-1 focus:ring-accent/50 
                                                             focus:border-accent/60 transition-all" 
-                                                value={exerciseSets[i]["weight"]}
+                                                value={set.weight}
                                                 onChange={(e) => handleSetChange(i,"weight",e.target.value)}
-                                                type="number" 
+                                                type="number"
+                                                min="0" 
                                                 />
                                     </div>
                                     <div className="space-y-1">
@@ -250,9 +367,10 @@ const ExerciseDetails = () => {
                                         <input className="w-full bg-black border border-white/10 rounded-lg p-2 font-outfit 
                                                             font-bold text-white  text-lg outline-none focus:ring-1 focus:ring-accent/50 
                                                             focus:border-accent/60 transition-all"
-                                                value={exerciseSets[i]["rep"]}
-                                                onChange={(e) => handleSetChange(i,"rep",e.target.value)}
-                                                type="number"/>
+                                                value={set.reps}
+                                                onChange={(e) => handleSetChange(i,"reps",e.target.value)}
+                                                type="number"
+                                                min="0"/>
                                     </div>
                                 </div>
                                 {(exerciseSets.length > 1 && i === (exerciseSets.length - 1)) && 
@@ -265,11 +383,18 @@ const ExerciseDetails = () => {
                             </div>
                         </div>))}
                 </section>
-                <button className="w-full bg-accent text-zinc-100 font-outfit font-bold py-4 rounded-xl uppercase tracking-wider 
+                {setIsLoading ? 
+                    (<button className="w-full bg-accent text-zinc-100 font-outfit font-bold py-4 rounded-xl uppercase tracking-wider 
                                 text-xl shadow-xl shadow-accent/20 active:scale-[0.98] transition-all"
-                        onClick={addWorkoutLog}>
-                    Add Sets
-                </button>
+                                onClick={addWorkoutLog}>
+                            Add Sets
+                    </button>) :
+                     (<div className="w-full bg-blue-800 text-zinc-300 font-outfit font-bold py-4 rounded-xl uppercase tracking-wider 
+                                text-xl shadow-xl shadow-accent/20 active:scale-[0.98] transition-all">
+                                    <span className="uppercase flex flex-row gap-2 items-center justify-center">
+                                 <div className="w-6 h-6 border-3 border-zinc-300 border-t-transparent 
+                                                rounded-full animate-spin"/>Adding Sets..</span>
+                    </div>)}
             </main>
         </>
     )
