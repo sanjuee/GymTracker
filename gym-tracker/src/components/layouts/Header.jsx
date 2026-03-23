@@ -49,7 +49,7 @@ const Header = () => {
         <header className="bg-app-bg-dark/95 backdrop-blur-md px-7 border-b border-[#1B1B1B] h-16
                             flex items-center justify-between sticky top-0 z-50 gap-2 sm:px-20  ">
             <div className="text-2xl text-accent font-black text-primary font-headline italic tracking-tighter">GYM<span className="text-zinc-50">LOG</span></div>
-            <SearchBar/>
+            <SearchBar onSelect={(exe) => navigate(`/exercise/${exe.id}`)}/>
            <button onClick={()=> setNavAuthPage(!navAuthPage) }>
                 <CircleUserRound size={25} className="relative cursor-pointer text-zinc-300"/>
            </button>

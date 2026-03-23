@@ -1,6 +1,7 @@
 import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabaseClient" 
+import { useNavigate } from "react-router-dom"
 
 
 const SearchBar = ({onSelect, searchFilterCategory}) =>{
