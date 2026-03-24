@@ -191,11 +191,11 @@ const Home = () => {
                         />
                 ))}
                 {exerciseToDelete && (
-                    <ConfirmDelete 
-                        exercise = {exerciseToDelete}
-                        onDelete = { () => deleteExercise(exerciseToDelete.id)}
-                        onCancel = { () => setExerciseToDelete(null)}
-                    />
+                        <ConfirmDelete 
+                            exercise = {exerciseToDelete}
+                            onDelete = { () => deleteExercise(exerciseToDelete.id)}
+                            onCancel = { () => setExerciseToDelete(null)}
+                        />
                 )}
                 {(addExerciseButton && user) && (
                         <AddExerciseFromDatabase 

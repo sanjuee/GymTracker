@@ -22,7 +22,6 @@ const ExerciseDetails = () => {
     })
     const [showImage, setShowImage] = useState(null)
     const [workoutLog, setWorkoutLog] = useState([])
-    const [isWorkoutLogEmpty, setIsWorkoutLogEmpty] = useState(false)
 
     useEffect(() => {
         const getWorkoutLog = async () => {
@@ -40,8 +39,6 @@ const ExerciseDetails = () => {
             } else if (workoutLogData) {
                     const chartFriendlyData = transformDataForChart(workoutLogData)
                     setWorkoutLog(chartFriendlyData)
-            }else{
-                setIsWorkoutLogEmpty(true)
             }
         }
         getWorkoutLog()
@@ -59,7 +56,7 @@ const ExerciseDetails = () => {
             .from("exercises")
             .select("*")
             .eq("id", exerciseId)
-                .single()
+            .single()
                 
                 if (error) {
                     console.error("Error fetching data:", error.message)
@@ -185,34 +182,37 @@ const ExerciseDetails = () => {
             <main className="pt-20 px-4 max-w-2xl mx-auto space-y-8 pb-20">
                 {showImage && <ImageView imageUrl={showImage} onClose={() => setShowImage(null)}/>}
                 <section className="">
-                    <h1 className="text-5xl font-outfit font-semibold tex">{exerciseDetails.name}</h1>
+                    <h1 className="text-5xl font-outfit font-semibold ">{exerciseDetails.name}</h1>
                     <div className="flex flex-row justify-between items-center">
                         <p className="text-accent uppercase tracking-widest text-md mt-1 ml-1 font-semibold">{exerciseDetails.category}</p>
                         <p className="text-zinc-400 font-inter text-md tracking-tight font-semibold mr-2">( Last done 3 days ago )</p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                        <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
-                            onClick={() => setShowImage(exerciseDetails.image_urls[0])}>
-                            <img    alt="Start Position" 
-                                    className="w-full h-full object-cover" 
-                                    src={exerciseDetails.image_urls[0]}
-                                    onClick={(e) => {e.stopPropagation()
-                                                    setShowImage(exerciseDetails.image_urls[0])}}/>
-                            <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] 
-                                    font-bold uppercase tracking-widest ">Start</div>
-                        </div>
-                        <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
-                            onClick={() => setShowImage(exerciseDetails.image_urls[1])}>
-                            <img    alt="End Position" 
-                                    className="w-full h-full object-cover" 
-                                    src={exerciseDetails.image_urls[1]}
-                                    onClick={(e) => {e.stopPropagation()
-                                                    setShowImage(exerciseDetails.image_urls[1])}}
-                                    />
-                            <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] 
-                            font-bold uppercase tracking-widest">Finish</div>
-                        </div>
-                        </div>                
+
+                    {!exerciseDetails.created_by &&
+                        <div className="grid grid-cols-2 gap-3 mt-2">
+                            <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
+                                onClick={() => setShowImage(exerciseDetails.image_urls[0])}>
+                                <img    alt="Start Position" 
+                                        className="w-full h-full object-cover" 
+                                        src={exerciseDetails.image_urls[0]}
+                                        onClick={(e) => {e.stopPropagation()
+                                                        setShowImage(exerciseDetails.image_urls[0])}}/>
+                                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] 
+                                        font-bold uppercase tracking-widest ">Start</div>
+                            </div>
+                            <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
+                                onClick={() => setShowImage(exerciseDetails.image_urls[1])}>
+                                <img    alt="End Position" 
+                                        className="w-full h-full object-cover" 
+                                        src={exerciseDetails.image_urls[1]}
+                                        onClick={(e) => {e.stopPropagation()
+                                                        setShowImage(exerciseDetails.image_urls[1])}}
+                                        />
+                                <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] 
+                                font-bold uppercase tracking-widest">Finish</div>
+                            </div>
+                        </div> 
+                    }         
                 </section>
                 <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div className="bg-zinc-900 p-4 rounded-xl border border-white/5">

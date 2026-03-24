@@ -90,18 +90,17 @@ const CreateCustomExercise = () => {
               const { error: insertExerciseError, data } = await supabase
                                   .from("exercises")
                                   .insert([{
-                                    name : toTitleCase(exerciseName.trim()),
-                                    main_muscle : mainMuscle,
-                                    secondary_muscles : secondaryMuscles,
-                                    equipment : equipment.trim(),
-                                    instructions: instructions.trim(),
-                                    mechanic : mechanism,
-                                    category: category,
-                                    image_urls : [exerciseImageUrl],
-                                    created_by : user.id,
+                                        name : toTitleCase(exerciseName.trim()),
+                                        main_muscle : mainMuscle,
+                                        secondary_muscles : secondaryMuscles,
+                                        equipment : equipment.trim(),
+                                        instructions: instructions.trim(),
+                                        mechanic : mechanism,
+                                        category: category,
+                                        image_urls : [exerciseImageUrl],
+                                        created_by : user.id,
                                   }]).select("id")
                                   .single()
-              console.log(data)
               const { error :insertUserExerciseError } = await supabase
                                                  .from("user_exercises")
                                                  .insert([{
