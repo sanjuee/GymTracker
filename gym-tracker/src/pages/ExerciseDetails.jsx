@@ -13,7 +13,7 @@ const ExerciseDetails = () => {
     const navigate = useNavigate()
     const { id : exerciseId } = useParams() 
     const [exerciseDetails, setExerciseDetails] = useState(null) 
-    const [loading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [exerciseSets, setExerciseSets] = useState(() => {
             const savedSets = localStorage.getItem(`workout_${exerciseId}`)
             return savedSets ? JSON.parse(savedSets) : [
@@ -142,12 +142,8 @@ const ExerciseDetails = () => {
     const stats = (() => {
         if (!workoutLog || workoutLog.length < 2) return { max: 0, progress: 0 };
 
-        // 1. Get All-Time Max
         const allWeights = workoutLog.map(log => log.weight);
         const maxWeight = Math.max(...allWeights);
-
-        // 2. Calculate Progress Percentage
-        // (Latest Weight - First Weight) / First Weight * 100
         const firstWeight = workoutLog[0].weight;
         const latestWeight = workoutLog[workoutLog.length - 1].weight;
         
@@ -157,7 +153,7 @@ const ExerciseDetails = () => {
 
         return {
             max: maxWeight,
-            progress: progressPercent.toFixed(1) // Keep one decimal point
+            progress: progressPercent.toFixed(1) 
         }
     })()
         
@@ -190,8 +186,11 @@ const ExerciseDetails = () => {
                 {showImage && <ImageView imageUrl={showImage} onClose={() => setShowImage(null)}/>}
                 <section className="">
                     <h1 className="text-5xl font-outfit font-semibold tex">{exerciseDetails.name}</h1>
-                    <p className="text-accent uppercase tracking-widest text-md mt-1 ml-1 font-semibold">{exerciseDetails.category}</p>
-                    <div className="grid grid-cols-2 gap-3 mt-4">
+                    <div className="flex flex-row justify-between items-center">
+                        <p className="text-accent uppercase tracking-widest text-md mt-1 ml-1 font-semibold">{exerciseDetails.category}</p>
+                        <p className="text-zinc-400 font-inter text-md tracking-tight font-semibold mr-2">( Last done 3 days ago )</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 mt-2">
                         <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
                             onClick={() => setShowImage(exerciseDetails.image_urls[0])}>
                             <img    alt="Start Position" 
@@ -250,12 +249,14 @@ const ExerciseDetails = () => {
                                         transition-transform text-accent"/>
                         </summary>
                         <ol className="pr-3 pl-6 pb-4 mt-3 space-y-3  text-on-surface-variant leading-relaxed list-decimal ">
-                            {exerciseDetails.instructions.map((i) => (
-                                <li className="font-outfit"
-                                    key={i}>
-                                    {i}
-                                </li>
-                            ))}
+                            {exerciseDetails.instructions 
+                                ?      exerciseDetails.instructions.map((i) => (
+                                            <li className="font-outfit"
+                                                key={i}>
+                                                {i}
+                                            </li>
+                                        ))
+                                : <p className="font-outfit text-md text-zinc-400 -mt-4">No instruction available.</p>}
                         </ol>
                     </details>
                 </section>
@@ -370,7 +371,7 @@ const ExerciseDetails = () => {
                             </div>
                         </div>))}
                 </section>
-                {setIsLoading ? 
+                {!isLoading ? 
                     (<button className="w-full bg-accent text-zinc-100 font-outfit font-bold py-4 rounded-xl uppercase tracking-wider 
                                 text-xl shadow-xl shadow-accent/20 active:scale-[0.98] transition-all"
                                 onClick={addWorkoutLog}>

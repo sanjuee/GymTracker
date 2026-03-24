@@ -33,7 +33,6 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                                             category,
                                             main_muscle
                                         )`)
-        
         if(error){
             console.error("Error adding exercise:", error)
             alert("Failed to add exercise. Please try again.")
@@ -58,17 +57,13 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
     return (
         <div className="z-9999 fixed inset-0 bg-black/80 backdrop-blur-md
                         flex justify-center items-center p-4">
-            
-           
             <div className="bg-[#121212] border border-zinc-800 shadow-2xl w-full max-w-md 
                             relative flex flex-col p-6 rounded-2xl gap-4 overflow-visible">
-                
                 <button 
                     onClick={onClose}
                     className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors cursor-pointer">
                     <X size={20} />
                 </button>
-
                 <div className="space-y-1">
                     <h2 className="text-2xl font-semibold  font-outfit tracking-wide text-zinc-100">
                         Add {exerciseCategory} Movements
@@ -77,7 +72,6 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                         Search our database for popular {exerciseCategory} exercise
                     </p>
                 </div>
-
                 <SearchBar onSelect={(item) => setSelectedExercise(item)}
                            searchFilterCategory={exerciseCategory}/>
                 {!isLoading ? (
@@ -95,8 +89,6 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                                 <div className="w-6 h-6 border-2 border-black border-t-transparent  rounded-full animate-spin"></div>
                         </button>
                     )}
-
-                
                 <div className="pt-2 border-t border-zinc-800/50 mt-2 text-center">
                     <p className="text-zinc-500 text-md">
                         Cant find it? 
