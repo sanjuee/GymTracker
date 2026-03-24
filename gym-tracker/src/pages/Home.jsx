@@ -5,7 +5,7 @@ import { Plus } from "lucide-react"
 import { useAuth } from "../context/AuthContext"
 import ExerciseRow from "../components/ExerciseRow"
 import ConfirmDelete from "../components/ConfirmDelete"
-import ToastMessage from "../components/toastMessage"
+import ToastMessage from "../components/ToastMessage"
 import Header from "../components/layouts/Header"
 import AddExerciseFromDatabase from "../components/AddExerciseFromDatabase"
 
