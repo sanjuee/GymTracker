@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { supabase } from "../lib/supabaseClient"
 import { Plus } from "lucide-react"
@@ -22,7 +22,8 @@ const muscleGroupList = [
 const Home = () => {
 
     const location = useLocation()
-    
+    const muscleGroupRef = useRef()
+
     const [user,setUser] = useState(null)
     const [exerciseData, setExerciseData] = useState({})
     const [exerciseToDelete, setExerciseToDelete ] = useState(null)
@@ -36,6 +37,7 @@ const Home = () => {
     const [showCustomAddToast, setShowCustomAddToast] = useState(false)
     // const [existingCategory, setExistingCategoryList] = useState([])
     const [showMuscleGoupList, setShowMuscleGroupList] = useState(false)
+    const [showMuscleGoupListAbove, setShowMuscleGroupListAbove] = useState(true)
 
 
 
@@ -121,6 +123,16 @@ const Home = () => {
         }
 
     },[location])
+
+    useEffect(() => {
+        if ( showMuscleGoupList && muscleGroupRef.current){
+            const rect = muscleGroupRef.current.getBoundingClientRect()
+
+            if  (rect.top < 20) setShowMuscleGroupListAbove(false)
+            else setShowMuscleGroupListAbove(true)
+
+        }
+    },[showMuscleGoupList])
 
     // useEffect(()=> {
     //         setExistingCategoryList(Object.keys(exerciseData))
@@ -224,26 +236,29 @@ const Home = () => {
                 <div className="max-w-xl mx-auto p-4 mb-20">
                     <div className="relative">
                         {showMuscleGoupList && (
-                            <div className="absolute bottom-full left-0 w-full mb-4 bg-zinc-900/95 border border-zinc-800 
-                                    rounded-3xl shadow-2xl backdrop-blur-md z-50 p-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
-                                <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3 ml-2">
-                                    Available Groups
+                            <div  ref={muscleGroupRef}
+                                  className={`absolute left-0 w-full z-50 p-3 bg-zinc-900/95 border border-zinc-800 rounded-3xl shadow-2xl backdrop-blur-md transition-all duration-200
+                                            ${showMuscleGoupListAbove 
+                                                ? "bottom-full mb-4 animate-in fade-in slide-in-from-bottom-2" 
+                                                : "top-full mt-4 animate-in fade-in slide-in-from-top-2"}`}>
+                                    <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-3 ml-2">
+                                        Available Groups
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        {muscleGroupList
+                                        .filter((m) => !Object.keys(exerciseData).includes(m))
+                                        .map((m) => (
+                                            <button
+                                            key={m}
+                                            onClick={() => addMusclegroup(m)}
+                                            className="text-left px-4 py-3 hover:bg-blue-800  rounded-2xl transition-all
+                                                        text-sm font-medium bg-zinc-700/50 cursor-pointer"
+                                            >
+                                            {m}
+                                            </button>
+                                        ))}
                                 </div>
-                            <div className="grid grid-cols-2 gap-2">
-                                {muscleGroupList
-                                .filter((m) => !Object.keys(exerciseData).includes(m))
-                                .map((m) => (
-                                    <button
-                                    key={m}
-                                    onClick={() => addMusclegroup(m)}
-                                    className="text-left px-4 py-3 hover:bg-blue-800  rounded-2xl transition-all
-                                                 text-sm font-medium bg-zinc-700/50 cursor-pointer"
-                                    >
-                                    {m}
-                                    </button>
-                                ))}
                         </div>
-                    </div>
                     )}
 
                     <button

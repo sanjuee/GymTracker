@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Navigate, useNavigate, useParams } from "react-router-dom"
+import {  useNavigate, useParams } from "react-router-dom"
 import { supabase } from "../lib/supabaseClient"
 import { ChevronDown, Trash2, ArrowLeft, Plus } from "lucide-react"
 import { Line, Tooltip, XAxis, YAxis, LineChart, ResponsiveContainer, CartesianGrid, Legend } from "recharts"

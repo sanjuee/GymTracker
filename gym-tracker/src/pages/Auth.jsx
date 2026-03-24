@@ -83,16 +83,16 @@ const Auth = () => {
                 {isSignUp ? (
                     <div className="mb-5">
                         <div className="flex justify-between  items-center mb-4">
-                            <div className="text-4xl text-accent/80 font-black text-primary font-headline 
-                            italic tracking-tighter">GYM<span className="text-zinc-50/70">LOG</span></div>
+                            <div className="text-4xl text-accent font-black text-primary font-headline 
+                            italic tracking-tighter">GYM<span className="text-zinc-50/80">LOG</span></div>
                         </div>
                         <h1 className="text-3xl font-semibold font-inter text-white/90 tracking-tight">Create your account </h1>
                     </div>
                 ) : (
                     <div className="mb-5">
                         <div className="flex   items-center mb-4">
-                            <div className="text-4xl text-accent/80 font-black text-primary font-headline 
-                                            italic tracking-tighter">GYM<span className="text-zinc-50/70">LOG</span></div>
+                            <div className="text-4xl text-accent font-black text-primary font-headline 
+                                            italic tracking-tighter">GYM<span className="text-zinc-50/80">LOG</span></div>
                             </div>
                         <h1 className="text-3xl font-semibold font-inter text-white/90 tracking-tight">Sign In </h1>
                     </div>
