@@ -22,10 +22,11 @@ const ExerciseDetails = () => {
     })
     const [showImage, setShowImage] = useState(null)
     const [workoutLog, setWorkoutLog] = useState([])
+    const [lastDoneFormatted, setLastDoneFormatted] = useState(null)
 
     useEffect(() => {
         const getWorkoutLog = async () => {
-            if (!user) return // Safety check for null user
+            if (!user) return 
 
             const { data: workoutLogData, error } = await supabase
                                                 .from("workout_log")
@@ -36,9 +37,14 @@ const ExerciseDetails = () => {
 
             if (error) {
                     console.error("Error fetching data", error.message)
-            } else if (workoutLogData) {
-                    const chartFriendlyData = transformDataForChart(workoutLogData)
-                    setWorkoutLog(chartFriendlyData)
+            } else if (workoutLogData && workoutLogData.length > 0 ) {
+
+                const latestEntry = workoutLogData[workoutLogData.length - 1]
+                const timeAgo = calculateTimeAgo(latestEntry.created_at)
+                setLastDoneFormatted(timeAgo)
+
+                const chartFriendlyData = transformDataForChart(workoutLogData)
+                setWorkoutLog(chartFriendlyData)
             }
         }
         getWorkoutLog()
@@ -87,6 +93,19 @@ const ExerciseDetails = () => {
         }, {})
 
         return Object.values(dailyMaxMap);
+    }
+    
+    const calculateTimeAgo = (dateString) => {
+        const lastDone = new Date(dateString)
+        const now = new Date()
+        const diffInMs = now - lastDone
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+
+        if (diffInDays === 0) return "today";
+        if (diffInDays === 1) return "yesterday";
+        if (diffInDays < 7) return `${diffInDays} days ago`;
+        
+        return lastDone.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     }
 
     const addNewExerciseSet = () => {
@@ -166,7 +185,8 @@ const ExerciseDetails = () => {
 
     return (
         <>
-            <header className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl flex items-center justify-between px-6 h-16 border-b border-white/5">
+            <header className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur-xl 
+                                flex items-center justify-between px-6 h-16 border-b border-white/5">
                 <div className="flex items-center gap-4">
                     <button className="text-white active:scale-95 duration-200">
                         <ArrowLeft className="cursor-pointer" 
@@ -185,12 +205,14 @@ const ExerciseDetails = () => {
                     <h1 className="text-5xl font-outfit font-semibold ">{exerciseDetails.name}</h1>
                     <div className="flex flex-row justify-between items-center">
                         <p className="text-accent uppercase tracking-widest text-md mt-1 ml-1 font-semibold">{exerciseDetails.category}</p>
-                        <p className="text-zinc-400 font-inter text-md tracking-tight font-semibold mr-2">( Last done 3 days ago )</p>
+                        {lastDoneFormatted &&
+                            <p className="text-zinc-400 font-inter text-md tracking-tight font-semibold mr-2 ml-1">( Last done {lastDoneFormatted})</p>}
                     </div>
 
                     {!exerciseDetails.created_by &&
                         <div className="grid grid-cols-2 gap-3 mt-2">
-                            <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
+                            <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer 
+                                            hover:opacity-90 transition-opacity" 
                                 onClick={() => setShowImage(exerciseDetails.image_urls[0])}>
                                 <img    alt="Start Position" 
                                         className="w-full h-full object-cover" 
@@ -200,7 +222,8 @@ const ExerciseDetails = () => {
                                 <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur px-2 py-0.5 rounded text-[10px] 
                                         font-bold uppercase tracking-widest ">Start</div>
                             </div>
-                            <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer hover:opacity-90 transition-opacity" 
+                            <div className="aspect-4/5 rounded-xl overflow-hidden bg-surface-bright relative cursor-pointer 
+                                            hover:opacity-90 transition-opacity" 
                                 onClick={() => setShowImage(exerciseDetails.image_urls[1])}>
                                 <img    alt="End Position" 
                                         className="w-full h-full object-cover" 
@@ -212,7 +235,7 @@ const ExerciseDetails = () => {
                                 font-bold uppercase tracking-widest">Finish</div>
                             </div>
                         </div> 
-                    }         
+                     }         
                 </section>
                 <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div className="bg-zinc-900 p-4 rounded-xl border border-white/5">
@@ -269,7 +292,9 @@ const ExerciseDetails = () => {
                             <div className="flex items-end justify-between mx-2 my-4">
                                 <div>
                                     <span className="text-[10px] font-bold uppercase text-accent tracking-widest">Personal Record</span>
-                                    <h3 className="font-headline font-black text-4xl">{stats.max} <span className="text-xs text-on-surface-variant font-medium -ml-2">Kg</span></h3>
+                                    <h3 className="font-headline font-black text-4xl">{stats.max} 
+                                                <span className="text-xs text-on-surface-variant font-medium -ml-2">Kg</span>
+                                    </h3>
                                 </div>
                                 <div className="text-right">
                                     <span className="text-[10px] font-bold uppercase text-on-surface-variant tracking-widest">Progress</span>
@@ -313,7 +338,8 @@ const ExerciseDetails = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="text-zinc-400 italic p-10 text-center bg-zinc-900/20 rounded-2xl border border-dashed border-zinc-800">
+                        <div className="text-zinc-400 italic p-10 text-center bg-zinc-900/20 rounded-2xl border border-dashed
+                                         border-zinc-800">
                             Log sets to view progress charts.
                         </div>
                     )}
