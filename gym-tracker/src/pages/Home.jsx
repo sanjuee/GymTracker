@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom"
 import { supabase } from "../lib/supabaseClient"
 import { Plus } from "lucide-react"
+import { useAuth } from "../context/AuthContext"
 import ExerciseRow from "../components/ExerciseRow"
 import ConfirmDelete from "../components/ConfirmDelete"
 import ToastMessage from "../components/toastMessage"
@@ -23,8 +24,7 @@ const Home = () => {
 
     const location = useLocation()
     const muscleGroupRef = useRef()
-
-    const [user,setUser] = useState(null)
+    const { user } = useAuth()
     const [exerciseData, setExerciseData] = useState({})
     const [exerciseToDelete, setExerciseToDelete ] = useState(null)
     const [showDeleteToast, setShowDeleteToast] = useState(false)
@@ -35,30 +35,8 @@ const Home = () => {
     const [exerciseCategory, setExerciseCategory] = useState(null)
     const [loadingExercsie, setLoadingExercise] = useState(false)
     const [showCustomAddToast, setShowCustomAddToast] = useState(false)
-    // const [existingCategory, setExistingCategoryList] = useState([])
     const [showMuscleGoupList, setShowMuscleGroupList] = useState(false)
     const [showMuscleGoupListAbove, setShowMuscleGroupListAbove] = useState(true)
-
-
-
-    useEffect(()=>{
-        try{
-            const getUserData = async() => {
-                const { data : {user}} = await supabase.auth.getUser()
-                setUser(user)
-            }
-            getUserData()
-    
-            const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-                setUser(session?.user ?? null)
-            })
-            return () => subscription.unsubscribe()
-        }
-        catch(err){
-            console.log(err)
-        }
-
-    },[])
 
     useEffect(() =>{
 
@@ -134,10 +112,6 @@ const Home = () => {
         }
     },[showMuscleGoupList])
 
-    // useEffect(()=> {
-    //         setExistingCategoryList(Object.keys(exerciseData))
-    // },[exerciseData])
-
     const requestDelete = (exerciseID) => {
         setExerciseToDelete(exerciseID)
     } 
@@ -170,7 +144,6 @@ const Home = () => {
     }
 
    const onExerciseAdded = (newExercise) => {
-
             const category = newExercise.category
             setExerciseData( (prevData) => {
                 const currentCategoryList = prevData[category] || []
@@ -246,13 +219,13 @@ const Home = () => {
                                     </div>
                                     <div className="grid grid-cols-2 gap-2">
                                         {muscleGroupList
-                                        .filter((m) => !Object.keys(exerciseData).includes(m))
-                                        .map((m) => (
-                                            <button
-                                            key={m}
-                                            onClick={() => addMusclegroup(m)}
-                                            className="text-left px-4 py-3 hover:bg-blue-800  rounded-2xl transition-all
-                                                        text-sm font-medium bg-zinc-700/50 cursor-pointer"
+                                                .filter((m) => !Object.keys(exerciseData).includes(m))
+                                                .map((m) => (
+                                                    <button
+                                                    key={m}
+                                                    onClick={() => addMusclegroup(m)}
+                                                    className="text-left px-4 py-3 hover:bg-blue-800  rounded-2xl transition-all
+                                                                text-sm font-medium bg-zinc-700/50 cursor-pointer"
                                             >
                                             {m}
                                             </button>
@@ -261,20 +234,20 @@ const Home = () => {
                         </div>
                     )}
 
-                    <button
-                        onClick={() => setShowMuscleGroupList(!showMuscleGoupList)}
-                        className="w-full border-2 border-dashed border-zinc-800 rounded-3xl p-8 group hover:border-accent/30
-                                 hover:bg-accent/5 transition-all flex flex-col items-center justify-center gap-3 cursor-pointer"
-                    >
-                        <div className="p-3 bg-zinc-900 rounded-full transition-transform border border-zinc-800">
-                            <Plus size={24} className="text-zinc-500" />
-                        </div>
-                        <p className="font-outfit text-zinc-500 group-hover:text-zinc-300 font-medium">
-                            Add Muscle Group
-                        </p>
-                    </button>
+                        <button
+                            onClick={() => setShowMuscleGroupList(!showMuscleGoupList)}
+                            className="w-full border-2 border-dashed border-zinc-800 rounded-3xl p-8 group hover:border-accent/30
+                                    hover:bg-accent/5 transition-all flex flex-col items-center justify-center gap-3 cursor-pointer"
+                        >
+                            <div className="p-3 bg-zinc-900 rounded-full transition-transform border border-zinc-800">
+                                <Plus size={24} className="text-zinc-500" />
+                            </div>
+                            <p className="font-outfit text-zinc-500 group-hover:text-zinc-300 font-medium">
+                                Add Muscle Group
+                            </p>
+                        </button>
                     </div>
-      </div>
+                </div>
 
 
                 {showDeleteToast && <ToastMessage message="Exercise Deleted !"/>}

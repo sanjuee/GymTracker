@@ -69,7 +69,7 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                 </button>
 
                 <div className="space-y-1">
-                    <h2 className="text-xl font-semibold tracking-tight text-zinc-100">
+                    <h2 className="text-2xl font-semibold  font-outfit tracking-wide text-zinc-100">
                         Add {exerciseCategory} Movements
                     </h2>
                     <p className="text-zinc-500 text-sm">
@@ -81,9 +81,9 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
                            searchFilterCategory={exerciseCategory}/>
                 {!isLoading ? (
                     <button onClick={handleAddToLog} 
-                            className="w-full bg-accent text-zinc-900 py-3 rounded-xl font-bold font-outfit
+                            className="w-full text-lg bg-accent text-zinc-100 py-3 rounded-xl font-bold font-outfit
                                     hover:opacity-90 transition-all flex items-center justify-center gap-2
-                                    shadow-lg shadow-accent/10 active:scale-[0.98] cursor-pointer">
+                                    shadow-lg shadow-accent/10 active:scale-[0.98] cursor-pointer uppercase">
                         <Plus size={18} strokeWidth={3} />
                         Add to Log
                     </button>
@@ -97,9 +97,9 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
 
                 
                 <div className="pt-2 border-t border-zinc-800/50 mt-2 text-center">
-                    <p className="text-zinc-500 text-sm">
+                    <p className="text-zinc-500 text-md">
                         Cant find it? 
-                        <button className="text-accent font-medium ml-1.5 cursor-pointer tracking-tight"
+                        <button className="text-accent font-semibold ml-1.5 cursor-pointer tracking-tight"
                                 onClick={() => navigate("/create-custom-exercise")}> 
                             Create custom exercise
                         </button>

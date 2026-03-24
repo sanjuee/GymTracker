@@ -4,15 +4,16 @@ import { supabase } from "../lib/supabaseClient"
 import { ChevronDown, Trash2, ArrowLeft, Plus } from "lucide-react"
 import { Line, Tooltip, XAxis, YAxis, LineChart, ResponsiveContainer, CartesianGrid, Legend } from "recharts"
 import ImageView from "../components/ImageView"
+import { useAuth } from "../context/AuthContext"
 
 const ExerciseDetails = () => {
 
 
+    const { user } = useAuth()
     const navigate = useNavigate()
     const { id : exerciseId } = useParams() 
     const [exerciseDetails, setExerciseDetails] = useState(null) 
     const [loading, setIsLoading] = useState(false)
-    const [user, setUser] = useState(null)
     const [exerciseSets, setExerciseSets] = useState(() => {
             const savedSets = localStorage.getItem(`workout_${exerciseId}`)
             return savedSets ? JSON.parse(savedSets) : [
@@ -22,20 +23,6 @@ const ExerciseDetails = () => {
     const [showImage, setShowImage] = useState(null)
     const [workoutLog, setWorkoutLog] = useState([])
     const [isWorkoutLogEmpty, setIsWorkoutLogEmpty] = useState(false)
-
-    
-    useEffect(() => {
-        const getUserData = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-            setUser(user)
-        }
-        getUserData()
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null)
-        })
-        return () => subscription.unsubscribe()
-    }, [])
 
     useEffect(() => {
         const getWorkoutLog = async () => {

@@ -1,8 +1,9 @@
 import {React,  useState, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import { Search, X, CircleArrowLeft, Info } from 'lucide-react'
-import Header from '../components/layouts/Header'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import Header from '../components/layouts/Header'
 
 const allMuscles = [
   'Abductors',
@@ -39,6 +40,7 @@ const categoryMap = {
   "Forearms": "Forearms",
   "Chest": "Chest"
 }
+
 const toTitleCase = (str) => {
   return str.toLowerCase().split(' ').map(word => 
     word.charAt(0).toUpperCase() + word.slice(1)
@@ -50,8 +52,7 @@ const mechanismOption = ["Compound", "Isolation"]
 const CreateCustomExercise = () => {
 
     const navigate = useNavigate()
-    
-    const [user, setUser] = useState(null)
+    const { user } = useAuth()
     const [exerciseName, setExerciseName] = useState('')
     const [mainMuscle, setMainMuscle] = useState('')
     const [secondaryMuscles, setSecondaryMuscles] = useState([])
@@ -65,23 +66,7 @@ const CreateCustomExercise = () => {
     const [errors, setErrors] = useState({})
     const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => {
-            try{
-                const getUserData = async() => {
-                    const { data : {user}} = await supabase.auth.getUser()
-                    setUser(user)
-                }
-                getUserData()
-        
-                const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-                    setUser(session?.user ?? null)
-                })
-                return () => subscription.unsubscribe()
-            }
-            catch(err){
-                console.log(err)
-            }
-        },[])
+
 
     const addCustomExercise = async() => {
               const newErrors = {}
@@ -154,7 +139,7 @@ const CreateCustomExercise = () => {
           <div className="flex flex-row justify-between  items-center mr-1.5 ">
             <header>
               <h1 className="text-4xl font-semibold tracking-tight font-headline ">Create Exercise</h1>
-              <p className="text-zinc-500 text-sm">Define your custom movement details.</p>
+              <p className="text-zinc-500 text-sm ml-1.5">Define your custom movement details.</p>
             </header>
             <CircleArrowLeft size={27}
               onClick={() => navigate("/")}
