@@ -42,6 +42,7 @@ const AddExerciseFromDatabase = ({ onClose, userData , toast, exerciseCategory, 
 
         const flatData = {
             "id" : data[0].id,
+            "exercise_id": data[0].exercise_id,
             "name": data[0].exercises.name,
             "muscle" : data[0].exercises.main_muscle,
             "category" : data[0].exercises.category,
