@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { supabase } from "../lib/supabaseClient"
-import { AlertCircle, CircleArrowLeft} from "lucide-react"
+import { AlertCircle} from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
 const Auth = () => {
@@ -15,21 +15,16 @@ const Auth = () => {
     const [username, setUsername] = useState("")
     const [validate, setValidate] = useState({})
 
-    const handleBack = () => {
-        (window.history.length > 1)
-            ? navigate(-1)
-            : navigate("/")
-    }
     
     const getFriendlyErrorMessage = (msg) => {
-        if (msg.includes("Invalid login credentials")) return "The email or password doesn't match. Please try again.";
-        if (msg.includes("Email not confirmed")) return "Check your inbox! You need to verify your email first.";
-        if (msg.includes("User already registered")) return "You already have an account! Try logging in instead.";
-        if (msg.includes("Password should be at least")) return "Your password is too short. Use at least 6 characters.";
-        if (msg.includes("rate limit")) return "Slow down! You've tried too many times. Wait a minute.";
+        if (msg.includes("Invalid login credentials")) return "The email or password doesn't match. Please try again."
+        if (msg.includes("Email not confirmed")) return "Check your inbox! You need to verify your email first."
+        if (msg.includes("User already registered")) return "You already have an account! Try logging in instead."
+        if (msg.includes("Password should be at least")) return "Your password is too short. Use at least 6 characters."
+        if (msg.includes("rate limit")) return "Slow down! You've tried too many times. Wait a minute."
         if (msg.includes("Failed to fetch")) return "Check your Internet; Failed to fetch"
         return msg; 
-    };
+    }
 
     const handleSignup = async(e) => {
         e.preventDefault()
@@ -38,8 +33,8 @@ const Auth = () => {
         
         if (isSignUp && (!username.trim())) newValidate.username = "Username is required!"
 
-        if (!email.trim())  newValidate.email = "Email is required!";
-            else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newValidate.email = "Enter a valid email!";
+        if (!email.trim())  newValidate.email = "Email is required!"
+            else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newValidate.email = "Enter a valid email!"
         
         if (!password.trim()) newValidate.password = "Password is required"
             else if (password.length < 6) newValidate.password = "Password must contain atleast 6 charecter."

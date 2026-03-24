@@ -1,7 +1,7 @@
 import { Search } from "lucide-react"
 import { useEffect, useState } from "react"
 import { supabase } from "../lib/supabaseClient" 
-import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 
 const SearchBar = ({onSelect, searchFilterCategory}) =>{
@@ -11,6 +11,7 @@ const SearchBar = ({onSelect, searchFilterCategory}) =>{
     const [loading, setLoading] = useState(false)
     const [showDropdown, setShowDropdown] = useState(false)
     const [isSelected, setIsSelected] = useState(false)
+    const { user } = useAuth()
 
     useEffect(() => {
         const fetchExercise = async () => {
@@ -33,7 +34,9 @@ const SearchBar = ({onSelect, searchFilterCategory}) =>{
             let query = supabase
                     .from("exercises")
                     .select("id, name")
+                    .or(`created_by.is.null, created_by.eq.${user.id}`)
                     .ilike('name', `%${searchKey}%`)
+                    .limit(15)
             
             if (searchFilterCategory){
                 query = query.eq("category", searchFilterCategory)
@@ -61,7 +64,7 @@ const SearchBar = ({onSelect, searchFilterCategory}) =>{
 
 
     return(
-         <div className="relative flex items-center gap-1 ">
+         <div className="relative flex items-center gap-1 mx-1">
                 <Search size={20} className=" absolute ml-2 text-zinc-400 pointer-events-none"/>
                 <input type="text" 
                     value={searchKey}

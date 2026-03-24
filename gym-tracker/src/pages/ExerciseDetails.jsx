@@ -96,16 +96,29 @@ const ExerciseDetails = () => {
     }
     
     const calculateTimeAgo = (dateString) => {
-        const lastDone = new Date(dateString)
-        const now = new Date()
-        const diffInMs = now - lastDone
-        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24))
+        if (!dateString) return "Never";
 
-        if (diffInDays === 0) return "today";
-        if (diffInDays === 1) return "yesterday";
-        if (diffInDays < 7) return `${diffInDays} days ago`;
+        const lastDone = new Date(dateString);
+        const now = new Date();
+        const diffInMs = now - lastDone;
         
-        return lastDone.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        const diffInMins = Math.floor(diffInMs / (1000 * 60));
+        const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+        const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+        if (diffInMins < 1) return "just now";
+
+        if (diffInHours < 1) return `${diffInMins}m ago`;
+
+        if (diffInHours < 24) {
+            return `${diffInHours} ${diffInHours === 1 ? 'hr' : 'hrs'} ago`;
+        }
+
+        if (diffInDays === 1) return "yesterday";
+
+        if (diffInDays < 7) return `${diffInDays} days ago`;
+
+        return lastDone.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
 
     const addNewExerciseSet = () => {
@@ -156,16 +169,16 @@ const ExerciseDetails = () => {
     }
 
     const stats = (() => {
-        if (!workoutLog || workoutLog.length < 2) return { max: 0, progress: 0 };
+        if (!workoutLog || workoutLog.length < 2) return { max: 0, progress: 0 }
 
         const allWeights = workoutLog.map(log => log.weight);
-        const maxWeight = Math.max(...allWeights);
-        const firstWeight = workoutLog[0].weight;
-        const latestWeight = workoutLog[workoutLog.length - 1].weight;
+        const maxWeight = Math.max(...allWeights)
+        const firstWeight = workoutLog[0].weight
+        const latestWeight = workoutLog[workoutLog.length - 1].weight
         
         const progressPercent = firstWeight > 0 
             ? ((latestWeight - firstWeight) / firstWeight) * 100 
-            : 0;
+            : 0
 
         return {
             max: maxWeight,
@@ -203,7 +216,7 @@ const ExerciseDetails = () => {
                 {showImage && <ImageView imageUrl={showImage} onClose={() => setShowImage(null)}/>}
                 <section className="">
                     <h1 className="text-5xl font-outfit font-semibold ">{exerciseDetails.name}</h1>
-                    <div className="flex flex-row justify-between items-center">
+                    <div className="flex flex-row justify-between items-center mt-0.5">
                         <p className="text-accent uppercase tracking-widest text-md mt-1 ml-1 font-semibold">{exerciseDetails.category}</p>
                         {lastDoneFormatted &&
                             <p className="text-zinc-400 font-inter text-md tracking-tight font-semibold mr-2 ml-1">( Last done {lastDoneFormatted})</p>}
@@ -293,7 +306,7 @@ const ExerciseDetails = () => {
                                 <div>
                                     <span className="text-[10px] font-bold uppercase text-accent tracking-widest">Personal Record</span>
                                     <h3 className="font-headline font-black text-4xl">{stats.max} 
-                                                <span className="text-xs text-on-surface-variant font-medium -ml-2">Kg</span>
+                                                <span className="text-xs text-on-surface-variant font-medium ml-1">Kg</span>
                                     </h3>
                                 </div>
                                 <div className="text-right">
@@ -338,7 +351,7 @@ const ExerciseDetails = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="text-zinc-400 italic p-10 text-center bg-zinc-900/20 rounded-2xl border border-dashed
+                        <div className="text-zinc-400 italic p-10 text-center bg-zinc-800/30 rounded-2xl border border-dashed
                                          border-zinc-800">
                             Log sets to view progress charts.
                         </div>

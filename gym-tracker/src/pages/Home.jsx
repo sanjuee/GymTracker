@@ -177,7 +177,7 @@ const Home = () => {
                         <div className="flex flex-row items-center gap-2">
                             <div className="w-6 h-6 border-3 border-accent border-t-transparent 
                                             rounded-full animate-spin"></div>
-                            <p className="text-xl font-outfit">Loading</p>
+                            <p className="text-xl font-outfit">Loading..</p>
                         </div>
                     </div>}
                 {Object.entries(exerciseData).map(([category, exercises])=>(
