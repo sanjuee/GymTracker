@@ -8,6 +8,7 @@ import ConfirmDelete from "../components/ConfirmDelete"
 import ToastMessage from "../components/ToastMessage"
 import Header from "../components/layouts/Header"
 import AddExerciseFromDatabase from "../components/AddExerciseFromDatabase"
+import Footer from "../components/layouts/Footer"
 
 const muscleGroupList = [
     "Back",
@@ -248,7 +249,7 @@ const Home = () => {
                         </button>
                     </div>
                 </div>
-
+                <Footer/>
 
                 {showDeleteToast && <ToastMessage message="Exercise Deleted !"/>}
                 {showSignInToast && <ToastMessage message={signInMessageToast}/>}
