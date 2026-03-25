@@ -14,12 +14,12 @@
 
 ##  Key Features
 
-- Secure Authentication:** Full user signup and login flow powered by Supabase Auth.
-- Progression Graphs:** Visualized strength gains using `Recharts`. Automatically calculates "Daily Max" to show clean trend lines.
-- Smart Categorization:** Organize your workouts by muscle groups (Chest, Back, Legs, etc.).
-- Custom Exercises:** Add exercises from a global database or create your own custom movements.
--  Mobile-First UI:** Dark-mode aesthetic designed for quick entry while training.
--  Protected Routes:** Advanced React Context API implementation ensures user data stays private.
+- **Secure Authentication:** Full user signup and login flow powered by Supabase Auth.
+- **Progression Graphs:** Visualized strength gains using `Recharts`. Automatically calculates "Daily Max" to show clean trend lines.
+- **Smart Categorization:** Organize your workouts by muscle groups (Chest, Back, Legs, etc.).
+- **Custom Exercises:** Add exercises from a global database or create your own custom movements.
+-  **Mobile-First UI:** Dark-mode aesthetic designed for quick entry while training.
+-  **Protected Routes:** Advanced React Context API implementation ensures user data stays private.
 
 ---
 
