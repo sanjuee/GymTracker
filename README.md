@@ -48,5 +48,5 @@ Follow these steps to run the project locally on your machine.
 
 ### 1. Clone the Repository
 ```bash
-git clone [https://github.com/sanjuee/GymTracker.git](https://github.com/sanjuee/GymTracker.git)
-cd GymTracker
+git clone [https://github.com/sanjuee/gym-log.git](https://github.com/sanjuee/gym-log.git)
+cd gym-log
